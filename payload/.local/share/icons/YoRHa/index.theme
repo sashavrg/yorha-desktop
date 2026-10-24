@@ -1,0 +1,5 @@
+[Icon Theme]
+Name=YoRHa
+Comment=YoRHa palette with system Breeze fallback
+Inherits=breeze,breeze,hicolor
+Directories=

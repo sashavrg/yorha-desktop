@@ -1,0 +1,33 @@
+{
+  "logo": {
+    "type": "file",
+    "source": "@HOME@/.config/fastfetch/yorha-logo.txt",
+    "color": {
+      "1": "#c8c2a9"
+    }
+  },
+  "display": {
+    "separator": " : ",
+    "color": {
+      "keys": "#c8c2a9",
+      "title": "#c8c2a9"
+    }
+  },
+  "modules": [
+    {
+      "type": "custom",
+      "format": "YoRHa / UNIT DIAGNOSTICS"
+    },
+    "separator",
+    "os",
+    "kernel",
+    "wm",
+    "shell",
+    "terminal",
+    "cpu",
+    "gpu",
+    "memory",
+    "disk",
+    "uptime"
+  ]
+}

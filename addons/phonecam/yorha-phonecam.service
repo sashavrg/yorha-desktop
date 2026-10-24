@@ -1,0 +1,10 @@
+[Unit]
+Description=YoRHa optional DroidCam over USB or local Wi-Fi
+After=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart="%h/.local/bin/yorha-phonecam-connect"
+ExecStopPost=-/usr/bin/adb forward --remove tcp:4747
+ExecStopPost=-/usr/bin/rm -f "%h/.cache/yorha-phonecam-mode"
+Restart=no

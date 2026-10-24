@@ -1,0 +1,34 @@
+#!/usr/bin/env python3
+"""Apply procedural wallpapers to physical displays, adapting to their orientation."""
+import argparse
+import json
+import os
+from pathlib import Path
+import re
+import subprocess
+import time
+root = Path.home()/'.local/share/yorha'
+p = argparse.ArgumentParser(description=__doc__)
+p.add_argument('--status', action='store_true')
+args = p.parse_args()
+if args.status:
+    print('interface');raise SystemExit(0)
+runtime = Path(os.environ.get('XDG_RUNTIME_DIR',f'/run/user/{os.getuid()}'))
+if (runtime/'sunshine-streaming').exists():
+    print('Moonlight active: wallpaper unchanged.');raise SystemExit(0)
+try: selected = (root/'mode').read_text().strip()
+except OSError: selected = 'night'
+folder = root/'wallpapers/interface'/('night' if selected=='night' else '')
+for _ in range(30):
+    result = subprocess.run(['swww','query'],capture_output=True,text=True)
+    if result.returncode == 0: break
+    time.sleep(.2)
+else: raise SystemExit('swww daemon is unavailable; run swww-daemon first.')
+for line in result.stdout.splitlines():
+    match = re.match(r'(?:^: )?([^:]+): (\d+)x(\d+),',line)
+    if not match: continue
+    output,w,h = match.groups()
+    if output.startswith(('HEADLESS-','Virtual-','Sunshine')): continue
+    image = folder/f'yorha-{w}x{h}.png'
+    if not image.exists(): image=folder/('yorha-1440x2560.png' if int(h)>int(w) else 'yorha-2560x1440.png')
+    subprocess.run(['swww','img','-o',output,str(image),'--resize','crop','--transition-type','fade','--transition-duration','0.5'],check=True)

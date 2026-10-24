@@ -1,0 +1,18 @@
+* { font-family: "Noto Sans", sans-serif; font-size: 12px; border-radius: 0; min-height: 0; }
+window#waybar { background: transparent; color: #c8c2a9; border: none; }
+#custom-yorha { background: #c8c2a9; color: #292622; padding: 0 20px; margin-right: 16px; font-size: 15px; letter-spacing: 2px; }
+#workspaces button { color: #aaa18f; padding: 0 14px; margin: 4px 3px; border: 1px solid transparent; background: #3c3730; box-shadow: none; }
+#workspaces button.active { color: #292622; background: #c8c2a9; border-color: #c8c2a9; }
+#workspaces button:hover { color: #c8c2a9; background: #2c2925; border-color: #625b50; }
+#workspaces button.active:hover { color: #292622; background: #c8c2a9; }
+#workspaces button.urgent { color: #292622; background: #b08a71; }
+#clock { font-family: "JetBrains Mono"; font-size: 17px; letter-spacing: 1px; padding: 0 16px; }
+#cpu, #memory, #custom-gpu, #network, #pulseaudio, #custom-notifications,
+#custom-mode, #custom-phonecam { font-family: "JetBrains Mono"; background: #2c2925; padding: 0 10px; border-left: 1px solid #625b50; margin: 4px 0; }
+#custom-power { background: #c8c2a9; color: #292622; padding: 0 14px; margin-left: 10px; }
+#custom-notifications:hover, #pulseaudio:hover, #network:hover, #custom-mode:hover, #custom-phonecam:hover { background: #3c3730; }
+#custom-phonecam.active { background: #c8c2a9; color: #292622; }
+#custom-phonecam.inactive { color: #aaa18f; }
+#image.soundwave { background: #2c2925; padding: 0 10px; margin: 4px 0; border-left: 1px solid #625b50; }
+tooltip { background: #2c2925; color: #c8c2a9; border: 1px solid #625b50; }
+tooltip label { color: #c8c2a9; padding: 8px; }

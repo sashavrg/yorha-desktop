@@ -1,0 +1,60 @@
+#!/usr/bin/env python3
+"""Local quests: add/list/done/remove/menu. Stored privately on this PC."""
+import argparse
+import datetime
+import subprocess
+import sys
+import uuid
+from pathlib import Path
+sys.path.insert(0, str(Path.home() / '.local/share/yorha'))
+import planner_store as store
+
+def update(action, key='', title='', day=None):
+    for _ in range(4):
+        state = store.read()
+        if action == 'add':
+            state['items'].append({'id': uuid.uuid4().hex[:12], 'day': day or datetime.date.today().isoformat(), 'title': title, 'done': False})
+        else:
+            item = next((t for t in state['items'] if t['id'] == key), None)
+            if item is None: raise ValueError('Task does not exist')
+            if action == 'remove': state['items'].remove(item)
+            else: item['done'] = not item.get('done', False)
+        try:
+            return store.write(state, state['rev'])
+        except store.Conflict: continue
+    raise RuntimeError('Tasks changed repeatedly; try again')
+
+def menu():
+    state = store.read()
+    today = datetime.date.today().isoformat()
+    items = [t for t in state['items'] if t.get('day') == today]
+    options = ['+ Add objective for today'] + [('☑ ' if t.get('done') else '☐ ') + t['title'] for t in items]
+    choice = subprocess.run(['rofi', '-dmenu', '-i', '-format', 'i', '-p', 'Quests'], input='\n'.join(options), capture_output=True, text=True)
+    if choice.returncode: return
+    try: index = int(choice.stdout)
+    except ValueError: return
+    if index == 0:
+        title = subprocess.run(['rofi', '-dmenu', '-p', 'New objective'], input='', capture_output=True, text=True)
+        if title.returncode == 0 and title.stdout.strip(): update('add', title=title.stdout.strip())
+    elif 0 < index <= len(items): update('done', key=items[index-1]['id'])
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('action', nargs='?', default='menu', choices=['add','list','done','remove','menu'])
+    parser.add_argument('value', nargs='?', default='')
+    parser.add_argument('--day', type=datetime.date.fromisoformat)
+    args = parser.parse_args()
+    if args.action == 'menu': menu()
+    elif args.action == 'list':
+        for item in store.read()['items']:
+            print(item['id'], item['day'], '[x]' if item.get('done') else '[ ]', item['title'])
+    elif args.action == 'add':
+        if not args.value.strip(): parser.error('Supply an objective title')
+        update('add', title=args.value.strip(), day=args.day.isoformat() if args.day else None)
+    else: update(args.action, key=args.value)
+
+if __name__ == '__main__':
+    try: main()
+    except (ValueError, RuntimeError) as exc:
+        print(str(exc), file=sys.stderr)
+        sys.exit(1)

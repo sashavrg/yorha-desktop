@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -euo pipefail
+units=()
+for name in yorha-desktop yorha-cockpit-widget; do
+  [[ -f "$HOME/.config/yorha/$name-enabled" ]] && units+=("$name.service")
+done
+if (( ${#units[@]} == 0 )); then echo 'No desktop panel components selected.'; exit 0; fi
+case "${1:-toggle}" in
+  show) systemctl --user start "${units[@]}" ;;
+  hide) systemctl --user stop "${units[@]}" ;;
+  toggle)
+    if systemctl --user is-active --quiet "${units[@]}"; then
+      systemctl --user stop "${units[@]}"
+    else
+      systemctl --user start "${units[@]}"
+    fi ;;
+  status) systemctl --user status "${units[@]}" --no-pager ;;
+  *) printf 'Usage: yorha-desktop [show|hide|toggle|status]\n' >&2; exit 2 ;;
+esac

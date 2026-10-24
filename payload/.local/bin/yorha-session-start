@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+set -euo pipefail
+export PATH="$HOME/.local/bin:$PATH"
+mkdir -p "$HOME/.cache/yorha"
+dbus-update-activation-environment --systemd WAYLAND_DISPLAY DISPLAY XDG_CURRENT_DESKTOP HYPRLAND_INSTANCE_SIGNATURE PATH || true
+systemctl --user import-environment WAYLAND_DISPLAY DISPLAY XDG_CURRENT_DESKTOP HYPRLAND_INSTANCE_SIGNATURE PATH || true
+# These launches are guarded; existing session instances are retained.
+pgrep -x swww-daemon >/dev/null || swww-daemon > "$HOME/.cache/yorha/swww.log" 2>&1 &
+pgrep -x swaync >/dev/null || swaync > "$HOME/.cache/yorha/swaync.log" 2>&1 &
+pgrep -x waybar >/dev/null || waybar > "$HOME/.cache/yorha/waybar.log" 2>&1 &
+"$HOME/.local/bin/yorha-wallpaper" > "$HOME/.cache/yorha/wallpaper.log" 2>&1 &
+if [[ -f "$HOME/.config/yorha/standby-enabled" ]]; then
+    pgrep -x hypridle >/dev/null || hypridle > "$HOME/.cache/yorha/idle.log" 2>&1 &
+fi
+for service in yorha-soundwave yorha-desktop yorha-cockpit-widget; do
+    [[ -f "$HOME/.config/yorha/$service-enabled" ]] && systemctl --user start "$service.service"
+done
+exit 0

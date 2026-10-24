@@ -1,0 +1,50 @@
+#!/usr/bin/env python3
+"""Apply a complete day/night palette: yorha-mode day|night|toggle|status."""
+from pathlib import Path
+import argparse
+import fcntl
+import json
+import os
+import shutil
+import subprocess
+import tempfile
+
+home = Path.home()
+root = home / '.local/share/yorha'
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('mode', nargs='?', default='toggle', choices=['day','night','toggle','status'])
+parser.add_argument('--json', action='store_true')
+args = parser.parse_args()
+try: current = (root/'mode').read_text().strip()
+except OSError: current = 'night'
+if current not in ['day','night']: current = 'night'
+if args.mode == 'status':
+    print(json.dumps(dict(text=current.upper(), **{'class': current}, tooltip='Switch day / night · Super+Alt+N')) if args.json else current)
+    raise SystemExit(0)
+cache = home/'.cache/yorha'
+cache.mkdir(parents=True, exist_ok=True)
+with (cache/'mode.lock').open('w') as lock:
+    fcntl.flock(lock, fcntl.LOCK_EX)
+    selected = ('day' if current == 'night' else 'night') if args.mode == 'toggle' else args.mode
+    files = json.loads((root/'modes/files.json').read_text())
+    content = {name: (root/'modes'/selected/name).read_bytes() for name in files}
+    for name, data in content.items():
+        target = home/name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        fd, tmp = tempfile.mkstemp(dir=target.parent, prefix='.yorha-')
+        try:
+            with os.fdopen(fd, 'wb') as stream: stream.write(data)
+            os.chmod(tmp, 0o644)
+            os.replace(tmp, target)
+        finally:
+            if os.path.exists(tmp): os.unlink(tmp)
+    (root/'mode').write_text(selected+'\n')
+    if shutil.which('gsettings'):
+        for key, value in [('gtk-theme', 'YoRHa-Night' if selected=='night' else 'YoRHa'),
+                           ('icon-theme','YoRHa-Night' if selected=='night' else 'YoRHa'),
+                           ('color-scheme','prefer-dark' if selected=='night' else 'prefer-light')]:
+            subprocess.run(['gsettings','set','org.gnome.desktop.interface',key,value], check=False)
+    if os.environ.get('HYPRLAND_INSTANCE_SIGNATURE'):
+        subprocess.run([str(home/'.local/bin/yorha-wallpaper')], check=False)
+        subprocess.run([str(home/'.local/bin/yorha-reload')], check=False)
+print('YoRHa '+selected+' mode applied.')

@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+# Gamepad input may not reset the compositor's desktop idle timer.
+if [[ -e "${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/sunshine-streaming" ]]; then
+    echo "Moonlight active: leaving display power unchanged."
+    exit 0
+fi
+case "${1:-}" in on|off) ;; *) exit 2 ;; esac
+if [[ "${2:-}" == --dry-run ]]; then echo "Would set display power $1"; exit 0; fi
+exec hyprctl dispatch dpms "$1"

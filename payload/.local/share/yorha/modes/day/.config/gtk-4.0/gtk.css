@@ -1,0 +1,67 @@
+@define-color theme_bg_color #d4d0b8;
+@define-color theme_fg_color #454438;
+@define-color theme_base_color #e5e1cb;
+@define-color theme_text_color #454438;
+@define-color theme_selected_bg_color #454438;
+@define-color theme_selected_fg_color #e5e1cb;
+@define-color insensitive_bg_color #d4d0b8;
+@define-color insensitive_fg_color #85816f;
+@define-color borders #aaa58e;
+@define-color accent_bg_color #454438;
+@define-color accent_fg_color #e5e1cb;
+@define-color accent_color #696654;
+@define-color window_bg_color #d4d0b8;
+@define-color window_fg_color #454438;
+@define-color view_bg_color #e5e1cb;
+@define-color view_fg_color #454438;
+@define-color headerbar_bg_color #c7c3ac;
+@define-color headerbar_fg_color #454438;
+@define-color headerbar_border_color #85816f;
+@define-color headerbar_backdrop_color #d4d0b8;
+@define-color card_bg_color #e5e1cb;
+@define-color card_fg_color #454438;
+@define-color dialog_bg_color #d4d0b8;
+@define-color dialog_fg_color #454438;
+@define-color popover_bg_color #e5e1cb;
+@define-color popover_fg_color #454438;
+@define-color sidebar_bg_color #c7c3ac;
+@define-color sidebar_fg_color #454438;
+@define-color sidebar_backdrop_color #d4d0b8;
+@define-color destructive_bg_color #87503e;
+@define-color destructive_fg_color #e5e1cb;
+@define-color destructive_color #87503e;
+@define-color error_color #87503e;
+@define-color warning_color #9b8050;
+@define-color success_color #6c775b;
+* { border-radius: 0; }
+window, dialog, .background { background-color: #d4d0b8; color: #454438; }
+headerbar, menubar, toolbar { background: #c7c3ac; color: #454438; box-shadow: none; border-bottom: 1px solid #aaa58e; }
+entry, textview, treeview, iconview, list, .view { background-color: #e5e1cb; color: #454438; }
+button { background-image: none; background-color: #d4d0b8; color: #454438; border: 1px solid #aaa58e; box-shadow: none; }
+button:hover { background-color: #b9b59e; }
+button:checked, button:active, button.suggested-action, row:selected, treeview:selected, iconview:selected, selection { background-color: #454438; color: #e5e1cb; }
+menu, popover, tooltip { background-color: #e5e1cb; color: #454438; border: 1px solid #85816f; }
+menuitem:hover { background-color: #454438; color: #e5e1cb; }
+separator { background-color: #aaa58e; min-width: 1px; min-height: 1px; }
+progressbar progress, scale highlight { background-color: #454438; }
+scrollbar slider { background-color: #85816f; min-width: 6px; min-height: 6px; }
+
+/* Notebook and text surfaces also need the neutral application palette. */
+notebook, notebook > stack, textview text { background-color: #e5e1cb; color: #454438; }
+notebook > header { background-color: #c7c3ac; border-color: #aaa58e; }
+notebook > header > tabs > tab { background-image: none; background-color: #c7c3ac; color: #696654; box-shadow: none; border-color: #aaa58e; }
+notebook > header > tabs > tab:checked { background-color: #e5e1cb; color: #454438; border-bottom: 2px solid #454438; box-shadow: none; }
+
+/* Explicit descendant colors keep explorer selections and controls readable. */
+button label, button image { color: inherit; }
+button:checked label, button:active label, button.suggested-action label { color: #e5e1cb; }
+row:selected, row:selected label, row:selected .dim-label,
+treeview.view:selected, treeview.view:selected:backdrop,
+iconview.view:selected, iconview.view:selected:backdrop,
+.view:selected, .view:selected:backdrop, .view:selected label { background-color: #454438; color: #e5e1cb; opacity: 1; }
+menuitem:hover label, menuitem:hover accelerator { color: #e5e1cb; }
+entry selection, textview text selection { background-color: #454438; color: #e5e1cb; }
+entry placeholder { color: #5b594b; }
+notebook > header > tabs > tab label { color: #454438; }
+button.destructive-action { background: #87503e; color: #e5e1cb; }
+button.destructive-action label { color: inherit; }

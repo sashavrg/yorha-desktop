@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -euo pipefail
+choice=$(printf '%s\n' '01 : Lock' '02 : Suspend' '03 : Log out' '04 : Reboot' '05 : Shut down' '06 : Day / Night mode' | rofi -dmenu -i -p 'System' -theme-str 'textbox-header { str: "■  YoRHa : SYSTEM CONTROL"; } listview { lines: 6; } mainbox { children: [textbox-header, inputbar, listview, textbox-footer]; }') || exit 0
+case "$choice" in
+    '06 : Day / Night mode') "$HOME/.local/bin/yorha-mode" toggle ;;
+    '01 : Lock') "$HOME/.local/bin/yorha-lock" ;;
+    '02 : Suspend') "$HOME/.local/bin/yorha-lock" & sleep 1; systemctl suspend ;;
+    '03 : Log out'|'04 : Reboot'|'05 : Shut down')
+        confirm=$(printf '%s\n' 'Cancel' 'Confirm' | rofi -dmenu -i -p "$choice" -theme-str 'textbox-header { str: "■  CONFIRM SYSTEM ACTION"; } listview { lines: 2; } mainbox { children: [textbox-header, inputbar, listview, textbox-footer]; }') || exit 0
+        [[ "$confirm" == Confirm ]] || exit 0
+        case "$choice" in
+            '03 : Log out') hyprctl dispatch exit ;;
+            '04 : Reboot') systemctl reboot ;;
+            '05 : Shut down') systemctl poweroff ;;
+        esac ;;
+esac

@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+set -u
+unit=yorha-phonecam.service
+case "${1:-status}" in
+  toggle)
+    if systemctl --user is-active --quiet "$unit"; then
+      systemctl --user stop "$unit"
+    else
+      if ! systemctl --user start "$unit"; then
+        message=$(journalctl --user -u "$unit" -n 1 --no-pager -o cat 2>/dev/null | tail -n 1)
+        command -v notify-send >/dev/null && notify-send -u normal 'Phone camera did not start' "${message:-Check that DroidCam is open and reachable on USB or the same Wi-Fi network.}"
+        exit 1
+      fi
+    fi
+    ;;
+  start) systemctl --user start "$unit" ;;
+  stop) systemctl --user stop "$unit" ;;
+  status)
+    if systemctl --user is-active --quiet "$unit"; then
+      mode=$(cat "$HOME/.cache/yorha-phonecam-mode" 2>/dev/null || printf 'connecting')
+      printf '{"text":"[ CAM: ON ]","class":"active","tooltip":"DroidCam over %s is running\\nClick to stop"}\n' "$mode"
+    else
+      printf '{"text":"[ CAM: OFF ]","class":"inactive","tooltip":"DroidCam is stopped\\nClick to start; USB is preferred, otherwise the local network is scanned for the phone"}\n'
+    fi
+    ;;
+  *) printf 'Usage: %s {status|start|stop|toggle}\n' "$0" >&2; exit 2 ;;
+esac

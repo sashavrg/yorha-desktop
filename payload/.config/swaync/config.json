@@ -1,0 +1,55 @@
+{
+  "$schema": "/etc/xdg/swaync/configSchema.json",
+  "positionX": "right",
+  "positionY": "top",
+  "layer": "overlay",
+  "control-center-layer": "top",
+  "layer-shell": true,
+  "cssPriority": "user",
+  "control-center-margin-top": 60,
+  "control-center-margin-bottom": 0,
+  "control-center-margin-right": 12,
+  "control-center-margin-left": 0,
+  "notification-2fa-action": true,
+  "notification-inline-replies": false,
+  "notification-icon-size": 24,
+  "notification-body-image-height": 100,
+  "notification-body-image-width": 100,
+  "notification-window-width": 400,
+  "timeout": 6,
+  "timeout-low": 3,
+  "timeout-critical": 0,
+  "fit-to-screen": false,
+  "control-center-width": 420,
+  "control-center-height": 720,
+  "keyboard-shortcuts": true,
+  "image-visibility": "when available",
+  "transition-time": 200,
+  "hide-on-clear": false,
+  "hide-on-action": true,
+  "script-fail-notify": true,
+  "widgets": [
+    "title",
+    "dnd",
+    "mpris",
+    "volume",
+    "notifications"
+  ],
+  "widget-config": {
+    "title": {
+      "text": "\u25a0  YoRHa : COMMUNICATIONS",
+      "clear-all-button": true,
+      "button-text": "Clear"
+    },
+    "dnd": {
+      "text": "Silence incoming transmissions"
+    },
+    "mpris": {
+      "image-size": 10,
+      "image-radius": 0
+    },
+    "volume": {
+      "label": "VOL"
+    }
+  }
+}

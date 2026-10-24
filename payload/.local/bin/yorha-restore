@@ -1,0 +1,15 @@
+#!/usr/bin/env python3
+"""Restore a wizard backup. Pass its path; list available backups with --list."""
+from pathlib import Path
+import os
+import sys
+root=Path.home()/'.local/state/yorha/backups'
+if len(sys.argv)<2 or sys.argv[1]=='--list':
+    for p in sorted(root.glob('*/manifest.json')):
+        import json
+        try: status=json.loads(p.read_text()).get('status','unknown')
+        except ValueError: status='invalid'
+        print(str(p.parent)+'  ['+status+']')
+    if len(sys.argv)<2: print('Usage: yorha-restore BACKUP_PATH [--force] [--stop-services]')
+else:
+    os.execv(sys.executable,[sys.executable,str(Path.home()/'.local/share/yorha/installer/restore.py'),*sys.argv[1:]])

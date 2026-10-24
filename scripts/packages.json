@@ -1,0 +1,113 @@
+{
+  "fedora": {
+    "core": [
+      "hyprland",
+      "waybar",
+      "swww",
+      "rofi-wayland",
+      "kitty",
+      "swaync",
+      "python3",
+      "python3-pip",
+      "python3-gobject",
+      "python3-cairo",
+      "python3-numpy",
+      "gtk-layer-shell",
+      "librsvg2",
+      "cava",
+      "pulseaudio-utils",
+      "pavucontrol",
+      "playerctl",
+      "xdg-utils",
+      "xdg-desktop-portal-hyprland",
+      "dbus-tools",
+      "google-noto-sans-fonts",
+      "jetbrains-mono-fonts",
+      "breeze-icon-theme",
+      "hyprlock"
+    ],
+    "desktop": [
+      "python3-psutil"
+    ],
+    "standby": [
+      "hyprlock",
+      "hypridle",
+      "python3-fonttools"
+    ],
+    "apps": [
+      "kvantum",
+      "kvantum-qt5",
+      "qt5ct",
+      "qt6ct",
+      "btop",
+      "fastfetch",
+      "neovim",
+      "starship"
+    ],
+    "sddm": [
+      "sddm",
+      "qt6-qtdeclarative",
+      "qt6-qtsvg",
+      "qt6-qtvirtualkeyboard"
+    ],
+    "phonecam": [
+      "android-tools"
+    ]
+  },
+  "arch": {
+    "core": [
+      "hyprland",
+      "waybar",
+      "swww",
+      "rofi",
+      "kitty",
+      "swaync",
+      "python",
+      "python-pip",
+      "python-gobject",
+      "python-cairo",
+      "python-numpy",
+      "gtk-layer-shell",
+      "librsvg",
+      "cava",
+      "libpulse",
+      "pavucontrol",
+      "playerctl",
+      "xdg-utils",
+      "xdg-desktop-portal-hyprland",
+      "dbus",
+      "noto-fonts",
+      "ttf-jetbrains-mono",
+      "breeze-icons",
+      "hyprlock"
+    ],
+    "desktop": [
+      "python-psutil"
+    ],
+    "standby": [
+      "hyprlock",
+      "hypridle",
+      "python-fonttools"
+    ],
+    "apps": [
+      "kvantum",
+      "kvantum-qt5",
+      "qt5ct",
+      "qt6ct",
+      "btop",
+      "fastfetch",
+      "neovim",
+      "starship"
+    ],
+    "sddm": [
+      "sddm",
+      "qt6-declarative",
+      "qt6-svg",
+      "qt6-virtualkeyboard",
+      "qt6-5compat"
+    ],
+    "phonecam": [
+      "android-tools"
+    ]
+  }
+}

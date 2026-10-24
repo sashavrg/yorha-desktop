@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2016
+set -euo pipefail
+# Variables inside child-shell programs deliberately expand only in the child.
+droidcam=$(command -v droidcam-cli) || { echo "Install DroidCam CLI first; see docs/PHONECAM.md" >&2; exit 1; }
+port=4747
+cache="$HOME/.cache/phonecam-ip"
+mode_file="$HOME/.cache/yorha-phonecam-mode"
+mkdir -p "$HOME/.cache"
+
+# Prefer the existing USB/ADB route whenever an authorized phone is attached.
+serial=$(/usr/bin/adb devices | /usr/bin/awk 'NR > 1 && $2 == "device" { print $1; exit }')
+if [[ -n "$serial" ]]; then
+  /usr/bin/adb -s "$serial" forward "tcp:$port" "tcp:$port"
+  printf 'USB\n' > "$mode_file"
+  exec "$droidcam" 127.0.0.1 "$port"
+fi
+
+# Otherwise use the same local /24 discovery as the phonecam-wifi shell alias.
+probe() { /usr/bin/timeout 1 /bin/bash -c 'exec 3<>/dev/tcp/$1/$2' _ "$1" "$port" >/dev/null 2>&1; }
+if [[ -r "$cache" ]]; then
+  ip=$(/usr/bin/cat "$cache")
+  if [[ "$ip" =~ ^[0-9]{1,3}(\.[0-9]{1,3}){3}$ ]] && probe "$ip"; then
+    printf 'Wi-Fi\n' > "$mode_file"
+    exec "$droidcam" "$ip" "$port"
+  fi
+fi
+
+source_ip=$(/usr/bin/ip -4 route get 1.1.1.1 2>/dev/null | /usr/bin/awk '{for(i=1;i<=NF;i++) if($i=="src"){print $(i+1); exit}}')
+subnet=${source_ip%.*}
+if [[ -z "$subnet" || "$subnet" == "$source_ip" ]]; then
+  echo 'phonecam: could not determine the local IPv4 subnet' >&2
+  exit 1
+fi
+printf 'phonecam: scanning %s.0/24 for DroidCam on port %s ...\n' "$subnet" "$port" >&2
+results=$(/usr/bin/mktemp)
+trap '/usr/bin/rm -f "$results"' EXIT
+/usr/bin/seq 1 254 | /usr/bin/xargs -P 32 -I '{}' /bin/sh -c '
+  ip="$1.$2"
+  if /usr/bin/timeout 1 /bin/bash -c '\''exec 3<>/dev/tcp/$1/$2'\'' _ "$ip" 4747 >/dev/null 2>&1; then
+    /usr/bin/printf "%s\\n" "$ip" >> "$3"
+  fi
+  exit 0
+' _ "$subnet" '{}' "$results"
+ip=$(/usr/bin/head -n 1 "$results")
+if [[ -z "$ip" ]]; then
+  echo 'phonecam: no DroidCam server found; open the app on the phone and keep it in the foreground' >&2
+  exit 1
+fi
+printf '%s\n' "$ip" > "$cache"
+printf 'Wi-Fi\n' > "$mode_file"
+exec "$droidcam" "$ip" "$port"

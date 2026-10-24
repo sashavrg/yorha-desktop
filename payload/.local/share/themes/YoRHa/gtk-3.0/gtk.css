@@ -1,0 +1,94 @@
+@import url("resource:///org/gtk/libgtk/theme/Adwaita/gtk-contained.css");
+@define-color theme_bg_color #d4d0b8;
+@define-color theme_fg_color #454438;
+@define-color theme_base_color #e5e1cb;
+@define-color theme_text_color #454438;
+@define-color theme_selected_bg_color #454438;
+@define-color theme_selected_fg_color #e5e1cb;
+@define-color insensitive_bg_color #d4d0b8;
+@define-color insensitive_fg_color #85816f;
+@define-color borders #aaa58e;
+@define-color accent_bg_color #454438;
+@define-color accent_fg_color #e5e1cb;
+@define-color accent_color #696654;
+@define-color window_bg_color #d4d0b8;
+@define-color window_fg_color #454438;
+@define-color view_bg_color #e5e1cb;
+@define-color view_fg_color #454438;
+@define-color headerbar_bg_color #c7c3ac;
+@define-color headerbar_fg_color #454438;
+@define-color headerbar_border_color #85816f;
+@define-color headerbar_backdrop_color #d4d0b8;
+@define-color card_bg_color #e5e1cb;
+@define-color card_fg_color #454438;
+@define-color dialog_bg_color #d4d0b8;
+@define-color dialog_fg_color #454438;
+@define-color popover_bg_color #e5e1cb;
+@define-color popover_fg_color #454438;
+@define-color sidebar_bg_color #c7c3ac;
+@define-color sidebar_fg_color #454438;
+@define-color sidebar_backdrop_color #d4d0b8;
+@define-color destructive_bg_color #87503e;
+@define-color destructive_fg_color #e5e1cb;
+@define-color destructive_color #87503e;
+@define-color error_color #87503e;
+@define-color warning_color #9b8050;
+@define-color success_color #6c775b;
+* { border-radius: 0; }
+window, dialog, .background { background-color: #d4d0b8; color: #454438; }
+headerbar, menubar, toolbar { background: #c7c3ac; color: #454438; box-shadow: none; border-bottom: 1px solid #aaa58e; }
+entry, textview, treeview, iconview, list, .view { background-color: #e5e1cb; color: #454438; }
+button { background-image: none; background-color: #d4d0b8; color: #454438; border: 1px solid #aaa58e; box-shadow: none; }
+button:hover { background-color: #b9b59e; }
+button:checked, button:active, button.suggested-action, row:selected, treeview:selected, iconview:selected, selection { background-color: #454438; color: #e5e1cb; }
+menu, popover, tooltip { background-color: #e5e1cb; color: #454438; border: 1px solid #85816f; }
+menuitem:hover { background-color: #454438; color: #e5e1cb; }
+separator { background-color: #aaa58e; min-width: 1px; min-height: 1px; }
+progressbar progress, scale highlight { background-color: #454438; }
+scrollbar slider { background-color: #85816f; min-width: 6px; min-height: 6px; }
+
+/* Notebook and text surfaces also need the neutral application palette. */
+notebook, notebook > stack, textview text { background-color: #e5e1cb; color: #454438; }
+notebook > header { background-color: #c7c3ac; border-color: #aaa58e; }
+notebook > header > tabs > tab { background-image: none; background-color: #c7c3ac; color: #696654; box-shadow: none; border-color: #aaa58e; }
+notebook > header > tabs > tab:checked { background-color: #e5e1cb; color: #454438; border-bottom: 2px solid #454438; box-shadow: none; }
+
+/* Explicit descendant colors keep explorer selections and controls readable. */
+button label, button image { color: inherit; }
+button:checked label, button:active label, button.suggested-action label { color: #e5e1cb; }
+row:selected, row:selected label, row:selected .dim-label,
+treeview.view:selected, treeview.view:selected:backdrop,
+iconview.view:selected, iconview.view:selected:backdrop,
+.view:selected, .view:selected:backdrop, .view:selected label { background-color: #454438; color: #e5e1cb; opacity: 1; }
+menuitem:hover label, menuitem:hover accelerator { color: inherit; }
+entry selection, textview text selection { background-color: #454438; color: #e5e1cb; }
+entry placeholder { color: #5b594b; }
+notebook > header > tabs > tab label { color: #454438; }
+button.destructive-action { background: #87503e; color: #e5e1cb; }
+button.destructive-action label { color: inherit; }
+
+/* Consistent menu/popup palettes, including inactive and cell-rendered dropdowns. */
+menu, .menu, .context-menu, popover, popover.background { background: #e5e1cb; color: #454438; }
+menu menuitem, .menu menuitem, .context-menu menuitem,
+menu menuitem:backdrop, .menu menuitem:backdrop,
+modelbutton.flat, modelbutton.flat:backdrop { background-image: none; background-color: transparent; color: #454438; }
+menu menuitem:hover, menu menuitem:selected,
+menu menuitem:hover:backdrop, menu menuitem:selected:backdrop,
+.menu menuitem:hover, .context-menu menuitem:hover,
+menubar > menuitem:hover, menubar > menuitem:selected,
+modelbutton.flat:hover, modelbutton.flat:selected,
+modelbutton.flat:hover:backdrop, modelbutton.flat:selected:backdrop { background-image: none; background-color: #454438; color: #e5e1cb; text-shadow: none; }
+menuitem label, menuitem accelerator, menuitem cellview,
+menuitem arrow, menuitem check, menuitem radio,
+modelbutton label, modelbutton image { color: inherit; text-shadow: none; -gtk-icon-shadow: none; }
+menuitem accelerator { opacity: 1; }
+menu menuitem:disabled, menu menuitem:disabled:backdrop,
+modelbutton.flat:disabled, modelbutton.flat:disabled:backdrop { background-color: transparent; color: #65624f; }
+combobox > box > button.combo label, combobox > box > button.combo cellview,
+combobox > box > button.combo arrow { color: inherit; }
+
+/* Adwaita's disabled/backdrop label rule must inherit the menu's muted ink. */
+menu menuitem:disabled label, menu menuitem:disabled label:backdrop,
+menu menuitem:disabled cellview, menu menuitem:disabled accelerator,
+.menu menuitem:disabled label, .context-menu menuitem:disabled label,
+modelbutton.flat:disabled label, modelbutton.flat:disabled label:backdrop { color: inherit; opacity: 1; }

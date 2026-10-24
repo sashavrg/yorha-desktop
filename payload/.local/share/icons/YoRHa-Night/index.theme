@@ -1,0 +1,5 @@
+[Icon Theme]
+Name=YoRHa-Night
+Comment=YoRHa palette with system Breeze fallback
+Inherits=breeze-dark,breeze,hicolor
+Directories=

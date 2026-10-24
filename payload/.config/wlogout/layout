@@ -1,0 +1,3 @@
+{"label": "lock", "action": "loginctl lock-session", "text": "01 : Lock", "keybind": "l"}
+{"label": "suspend", "action": "loginctl lock-session && sleep 1 && systemctl suspend", "text": "02 : Suspend", "keybind": "s"}
+{"label": "logout", "action": "\"$HOME/.local/bin/yorha-power\"", "text": "03 : System control", "keybind": "p"}

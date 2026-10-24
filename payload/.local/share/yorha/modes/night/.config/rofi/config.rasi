@@ -1,0 +1,106 @@
+configuration {
+    modes: "drun,run,window";
+    font: "Noto Sans 12";
+    show-icons: false;
+    display-drun: "Applications";
+    display-run: "Execute";
+    display-window: "Windows";
+    drun-display-format: "{name}";
+    matching: "fuzzy";
+    sort: true;
+    sidebar-mode: true;
+}
+* {
+    background-color: transparent;
+    text-color: #c8c2a9;
+    border-color: #9b9384;
+    selected-normal-background: #c8c2a9;
+    selected-normal-foreground: #2f2c28;
+    normal-background: #242220;
+    normal-foreground: #c8c2a9;
+    alternate-normal-background: #242220;
+    alternate-normal-foreground: #c8c2a9;
+    spacing: 0;
+}
+window { width: 640px;
+    background-color: #242220;
+    border: 2px solid;
+    border-color: #c8c2a9;
+    border-radius: 0;
+    padding: 24px;
+    }
+mainbox { children: [ textbox-header, sidebar, inputbar, message, listview, textbox-footer ];
+    spacing: 15px;
+    }
+textbox-header { expand: false;
+    str: "■  YoRHa : SYSTEM MENU";
+    font: "Noto Sans Bold 17";
+    padding: 0px 0px 14px;
+    border: 0px solid 0px solid 2px solid;
+    border-color: #c8c2a9;
+    }
+sidebar { spacing: 6px;
+    }
+button { padding: 8px 14px;
+    background-color: #3c3832;
+    }
+button selected { background-color: #c8c2a9;
+    text-color: #2f2c28;
+    }
+inputbar { children: [prompt, entry];
+    padding: 12px;
+    background-color: #2f2c28;
+    border: 0px solid 0px solid 1px solid;
+    spacing: 14px;
+    }
+prompt { text-color: #b0a58f;
+    }
+entry { placeholder: "Search system database…";
+    placeholder-color: #9b9384;
+    }
+listview { lines: 8;
+    columns: 1;
+    fixed-height: true;
+    spacing: 5px;
+    scrollbar: true;
+    }
+element { padding: 10px 14px;
+    border: 0px solid 0px solid 1px solid;
+    border-color: #3c3832;
+    }
+element normal.normal, element alternate.normal { background-color: #242220;
+    text-color: #c8c2a9;
+    }
+element selected.normal, element selected.active { background-color: #c8c2a9;
+    text-color: #2f2c28;
+    border-color: #c8c2a9;
+    }
+element-text { background-color: inherit;
+    text-color: inherit;
+    vertical-align: 0.5;
+    }
+element-icon { size: 24px;
+    margin: 0px 12px 0px 0px;
+    }
+textbox-footer { expand: false;
+    str: "↑ ↓  SELECT     /     ENTER  CONFIRM     /     ESC  RETURN";
+    font: "JetBrains Mono 11";
+    text-color: #b0a58f;
+    padding: 14px 0px 0px;
+    border: 1px solid 0px solid 0px solid;
+    }
+message { padding: 8px;
+    border: 1px solid;
+    }
+scrollbar { width: 3px;
+    handle-width: 3px;
+    handle-color: #9b9384;
+    }
+
+* { foreground: #c8c2a9; background: #242220; separatorcolor: #9b9384; }
+listview, sidebar { border: 0; }
+
+/* Uniform readable foregrounds in every list state. */
+element normal.active, element alternate.active { background-color: #242220; text-color: #c8c2a9; }
+element normal.urgent, element alternate.urgent { background-color: #242220; text-color: #c18469; }
+element selected.normal, element selected.active, element selected.urgent { background-color: #c8c2a9; text-color: #2f2c28; }

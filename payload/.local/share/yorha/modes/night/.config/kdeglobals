@@ -1,0 +1,165 @@
+[ColorEffects:Disabled]
+ChangeSelectionColor =
+Color = 56,56,56
+ColorAmount = 0
+ColorEffect = 0
+ContrastAmount = 0.65
+ContrastEffect = 1
+Enable =
+IntensityAmount = 0.1
+IntensityEffect = 2
+
+[ColorEffects:Inactive]
+ChangeSelectionColor = true
+Color = 112,111,110
+ColorAmount = 0.025
+ColorEffect = 2
+ContrastAmount = 0.1
+ContrastEffect = 2
+Enable = false
+IntensityAmount = 0
+IntensityEffect = 0
+
+[Colors:Button]
+BackgroundNormal = 36,34,32
+BackgroundAlternate = 47,44,40
+ForegroundNormal = 200,194,169
+ForegroundInactive = 155,147,132
+ForegroundActive = 176,165,143
+ForegroundLink = 141,163,160
+ForegroundVisited = 174,150,167
+ForegroundNegative = 193,132,105
+ForegroundNeutral = 179,160,115
+ForegroundPositive = 154,170,123
+DecorationFocus = 200,194,169
+DecorationHover = 155,147,132
+
+[Colors:Complementary]
+BackgroundNormal = 36,34,32
+BackgroundAlternate = 47,44,40
+ForegroundNormal = 200,194,169
+ForegroundInactive = 155,147,132
+ForegroundActive = 176,165,143
+ForegroundLink = 141,163,160
+ForegroundVisited = 174,150,167
+ForegroundNegative = 193,132,105
+ForegroundNeutral = 179,160,115
+ForegroundPositive = 154,170,123
+DecorationFocus = 200,194,169
+DecorationHover = 155,147,132
+
+[Colors:Header]
+BackgroundNormal = 41,38,35
+BackgroundAlternate = 47,44,40
+ForegroundNormal = 200,194,169
+ForegroundInactive = 155,147,132
+ForegroundActive = 176,165,143
+ForegroundLink = 141,163,160
+ForegroundVisited = 174,150,167
+ForegroundNegative = 193,132,105
+ForegroundNeutral = 179,160,115
+ForegroundPositive = 154,170,123
+DecorationFocus = 200,194,169
+DecorationHover = 155,147,132
+
+[Colors:Header][Inactive]
+BackgroundNormal = 41,38,35
+BackgroundAlternate = 47,44,40
+ForegroundNormal = 200,194,169
+ForegroundInactive = 155,147,132
+ForegroundActive = 176,165,143
+ForegroundLink = 141,163,160
+ForegroundVisited = 174,150,167
+ForegroundNegative = 193,132,105
+ForegroundNeutral = 179,160,115
+ForegroundPositive = 154,170,123
+DecorationFocus = 200,194,169
+DecorationHover = 155,147,132
+
+[Colors:Selection]
+BackgroundNormal = 200,194,169
+BackgroundAlternate = 190,185,160
+ForegroundNormal = 47,44,40
+ForegroundInactive = 47,44,40
+ForegroundActive = 47,44,40
+ForegroundLink = 47,44,40
+ForegroundVisited = 47,44,40
+ForegroundNegative = 47,44,40
+ForegroundNeutral = 47,44,40
+ForegroundPositive = 47,44,40
+DecorationFocus = 200,194,169
+DecorationHover = 155,147,132
+
+[Colors:Tooltip]
+BackgroundNormal = 36,34,32
+BackgroundAlternate = 47,44,40
+ForegroundNormal = 200,194,169
+ForegroundInactive = 155,147,132
+ForegroundActive = 176,165,143
+ForegroundLink = 141,163,160
+ForegroundVisited = 174,150,167
+ForegroundNegative = 193,132,105
+ForegroundNeutral = 179,160,115
+ForegroundPositive = 154,170,123
+DecorationFocus = 200,194,169
+DecorationHover = 155,147,132
+
+[Colors:View]
+BackgroundNormal = 36,34,32
+BackgroundAlternate = 47,44,40
+ForegroundNormal = 200,194,169
+ForegroundInactive = 155,147,132
+ForegroundActive = 176,165,143
+ForegroundLink = 141,163,160
+ForegroundVisited = 174,150,167
+ForegroundNegative = 193,132,105
+ForegroundNeutral = 179,160,115
+ForegroundPositive = 154,170,123
+DecorationFocus = 200,194,169
+DecorationHover = 155,147,132
+
+[Colors:Window]
+BackgroundNormal = 36,34,32
+BackgroundAlternate = 47,44,40
+ForegroundNormal = 200,194,169
+ForegroundInactive = 155,147,132
+ForegroundActive = 176,165,143
+ForegroundLink = 141,163,160
+ForegroundVisited = 174,150,167
+ForegroundNegative = 193,132,105
+ForegroundNeutral = 179,160,115
+ForegroundPositive = 154,170,123
+DecorationFocus = 200,194,169
+DecorationHover = 155,147,132
+
+[General]
+ColorSchemeHash = 9f63c7711a13123582e720791ea0f8c0172977d2
+ColorScheme = YoRHa-Night
+
+[KFileDialog Settings]
+Allow Expansion = false
+Automatically select filename extension = true
+Breadcrumb Navigation = true
+Decoration position = 2
+Show Full Path = false
+Show Inline Previews = false
+Show Preview = false
+Show Speedbar = true
+Show hidden files = false
+Sort by = Name
+Sort directories first = true
+Sort hidden files last = false
+Sort reversed = false
+Speedbar Width = 191
+View Style = Simple
+
+[WM]
+activeBackground = 41,38,35
+activeBlend = 227,229,231
+activeForeground = 200,194,169
+inactiveBackground = 36,34,32
+inactiveBlend = 239,240,241
+inactiveForeground = 155,147,132
+
+[Icons]
+Theme = YoRHa-Night

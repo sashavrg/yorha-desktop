@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+calendar-venv/
+backups/
+*.log
+.env
+.env.*
+calendar-feed-url
+tasks.json
+tasks.lock
+payload/.local/share/yorha/wallpapers/
+*.mp4

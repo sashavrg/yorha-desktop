@@ -1,0 +1,25 @@
+* { font-family: "Noto Sans"; font-size: 12px; border-radius: 0; color: #c8c2a9; }
+.control-center { background: #242220; border: 2px solid #c8c2a9; padding: 16px; }
+.notification-row { outline: none; }
+.notification { background: #2f2c28; border: 1px solid #9b9384; margin: 6px; box-shadow: none; }
+.notification-content { padding: 14px; }
+.summary { font-weight: bold; font-size: 14px; }
+.time { color: #b0a58f; font-family: "JetBrains Mono"; }
+.body { color: #c8c2a9; }
+.close-button, .notification-action, .widget-title button { background: #c8c2a9; color: #2f2c28; border: 0; box-shadow: none; padding: 6px 12px; }
+.close-button:hover, .notification-action:hover, .widget-title button:hover { background: #b0a58f; }
+.widget-title { font-weight: bold; padding-bottom: 14px; border-bottom: 2px solid #c8c2a9; }
+.widget-dnd { padding: 16px 0; }
+.widget-dnd switch { background: #565047; border: 1px solid #9b9384; }
+.widget-dnd switch:checked { background: #c8c2a9; }
+.widget-dnd switch slider { background: #2f2c28; }
+.widget-mpris { background: #3c3832; padding: 12px; margin: 8px 0; }
+.widget-mpris-player { padding: 8px; }
+.widget-volume { padding: 12px 0; }
+scale trough { background: #3c3832; min-height: 4px; }
+scale highlight { background: #c8c2a9; }
+scale slider { background: #c8c2a9; min-width: 10px; min-height: 10px; }
+.notification.critical { border: 2px solid #c18469; }
+
+button label, button image { color: inherit; }
+.close-button label, .notification-action label, .widget-title button label { color: #2f2c28; }

@@ -1,0 +1,36 @@
+add_newline = true
+format = "[┌─](bold #9b9384) $username$hostname$directory$git_branch$git_status$python$nodejs$rust$cmd_duration\n[└─](bold #9b9384) $character"
+[username]
+show_always = true
+style_user = "bold #c8c2a9"
+format = "[YoRHa](bold #c8c2a9) [//](#9b9384) "
+[hostname]
+ssh_only = true
+style = "#c18469"
+format = "[$hostname]($style) "
+[directory]
+style = "#c8c2a9"
+truncation_length = 4
+format = "[$path]($style) "
+[git_branch]
+symbol = ""
+style = "#b0a58f"
+format = "[:: $branch]($style) "
+[git_status]
+style = "#c18469"
+[character]
+success_symbol = "[■](#c8c2a9)"
+error_symbol = "[■](#c18469)"
+[cmd_duration]
+min_time = 2000
+style = "#9b9384"
+format = "[ / $duration]($style) "
+[python]
+symbol = "PY "
+style = "#9aaa7b"
+[nodejs]
+symbol = "JS "
+style = "#9aaa7b"
+[rust]
+symbol = "RS "
+style = "#c18469"

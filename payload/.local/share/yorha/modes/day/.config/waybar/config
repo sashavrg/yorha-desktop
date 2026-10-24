@@ -1,0 +1,111 @@
+{
+  "layer": "top",
+  "position": "top",
+  "height": 46,
+  "margin-top": 20,
+  "margin-left": 32,
+  "margin-right": 32,
+  "spacing": 0,
+  "modules-left": [
+    "custom/yorha",
+    "hyprland/workspaces"
+  ],
+  "modules-center": [
+    "clock"
+  ],
+  "modules-right": [
+    "custom/mode",
+    "pulseaudio",
+    "image#soundwave",
+    "custom/notifications",
+    "custom/power"
+  ],
+  "custom/yorha": {
+    "format": "\u25a0  YoRHa",
+    "on-click": "rofi -show drun",
+    "tooltip": false
+  },
+  "hyprland/workspaces": {
+    "format": "{name}",
+    "on-click": "activate",
+    "all-outputs": false,
+    "sort-by-number": true
+  },
+  "clock": {
+    "format": "{:%H:%M  /  %d.%m.%Y}",
+    "tooltip-format": "{:%A, %d %B %Y}"
+  },
+  "cpu": {
+    "format": "CPU {usage:02d}%",
+    "interval": 3
+  },
+  "custom/gpu": {
+    "exec": "\"$HOME/.local/bin/yorha-gpu\"",
+    "interval": 5,
+    "format": "GPU {}%",
+    "tooltip": false
+  },
+  "memory": {
+    "format": "MEM {percentage}%",
+    "interval": 5,
+    "tooltip-format": "{used:.1f} / {total:.1f} GiB"
+  },
+  "network": {
+    "format-ethernet": "NET : LAN",
+    "format-wifi": "NET : {signalStrength}%",
+    "format-disconnected": "NET : OFF",
+    "tooltip-format": "{ifname} : {ipaddr}",
+    "on-click": "nm-connection-editor"
+  },
+  "pulseaudio": {
+    "format": "VOL {volume}%",
+    "format-muted": "VOL : OFF",
+    "on-click": "pavucontrol",
+    "on-click-right": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
+    "scroll-step": 5
+  },
+  "custom/notifications": {
+    "exec": "swaync-client -swb",
+    "return-type": "json",
+    "format": "{icon}",
+    "format-icons": {
+      "notification": "\u25cf COMMS",
+      "none": "\u25cb COMMS",
+      "dnd-notification": "\u25a0 SILENT",
+      "dnd-none": "\u25a1 SILENT",
+      "inhibited-notification": "\u25cf COMMS",
+      "inhibited-none": "\u25cb COMMS",
+      "dnd-inhibited-notification": "\u25a0 SILENT",
+      "dnd-inhibited-none": "\u25a1 SILENT"
+    },
+    "on-click": "swaync-client -t",
+    "on-click-right": "swaync-client -d",
+    "tooltip": false
+  },
+  "custom/power": {
+    "format": "[ SYS ]",
+    "tooltip": false,
+    "on-click": "\"$HOME/.local/bin/yorha-power\""
+  },
+  "name": "yorha",
+  "custom/mode": {
+    "exec": "\"$HOME/.local/bin/yorha-mode\" status --json",
+    "return-type": "json",
+    "interval": 3,
+    "format": "[ {} ]",
+    "on-click": "\"$HOME/.local/bin/yorha-mode\" toggle",
+    "tooltip": true
+  },
+  "image#soundwave": {
+    "path": "@RUNTIME@/yorha-soundwave/waybar.png",
+    "size": 148,
+    "signal": 9,
+    "tooltip": false,
+    "on-click": "pavucontrol"
+  },
+  "output": [
+    "!HEADLESS-*",
+    "!Virtual-*",
+    "!Sunshine*"
+  ]
+}

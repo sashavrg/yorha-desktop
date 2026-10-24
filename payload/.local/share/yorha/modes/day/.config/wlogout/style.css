@@ -1,0 +1,4 @@
+* { font-family: "Noto Sans"; border-radius: 0; }
+window { background-color: rgba(69,68,56,0.92); }
+button { background-image: none; background-color: #d4d0b8; color: #454438; border: 2px solid #85816f; margin: 8px; font-size: 20px; box-shadow: none; }
+button:hover, button:focus { background-image: none; background-color: #454438; color: #e5e1cb; border-color: #e5e1cb; }

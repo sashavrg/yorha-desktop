@@ -1,0 +1,23 @@
+name: Source and installer checks
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python3 scripts/check-source.py
+      - run: python3 -m unittest discover -s tests -v
+      - run: ./install.sh --dry-run --distro fedora --target /tmp/yorha-ci-plan
+      - name: Shell syntax
+        run: |
+          bash -n install.sh scripts/install-deps.sh
+          for script in payload/.local/bin/* addons/phonecam/yorha-*; do
+            if head -n 1 "$script" | grep -q bash; then bash -n "$script"; fi
+          done

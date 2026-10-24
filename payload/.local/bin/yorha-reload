@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -u
+export PATH="$HOME/.local/bin:$PATH"
+if [[ -n ${HYPRLAND_INSTANCE_SIGNATURE:-} ]]; then hyprctl reload; fi
+pkill -x waybar || true
+mkdir -p "$HOME/.cache/yorha"
+waybar > "$HOME/.cache/yorha/waybar.log" 2>&1 &
+if command -v swaync-client >/dev/null; then
+    swaync-client -R >/dev/null 2>&1 || true
+    swaync-client -rs >/dev/null 2>&1 || true
+fi
+for socket in "${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"/yorha-kitty-*; do
+    [[ -S "$socket" ]] && kitty @ --to "unix:$socket" load-config >/dev/null 2>&1
+done
+exit 0
