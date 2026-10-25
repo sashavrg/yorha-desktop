@@ -1,4 +1,4 @@
-"""Optional, pinned community trace. It is not part of the distributed artwork."""
+"""Pinned community trace downloaded at install time; not bundled artwork."""
 import hashlib
 from pathlib import Path
 import urllib.request
@@ -13,7 +13,7 @@ def fetch(destination):
     with urllib.request.urlopen(request,timeout=20) as response:
         data=response.read(65537)
     if len(data)>65536 or hashlib.sha256(data).hexdigest()!=SHA256:
-        raise ValueError('Optional emblem checksum mismatch; no artwork was installed')
+        raise ValueError('YoRHa emblem checksum mismatch; no artwork was installed')
     source=ET.fromstring(data)
     ET.register_namespace('',SVG)
     output=ET.Element('{'+SVG+'}svg',dict(viewBox='6.5 21.25 196.75 231.5',width='196.75',height='231.5'))
@@ -27,5 +27,6 @@ def fetch(destination):
             visit(child,target)
     visit(source,output)
     destination=Path(destination)
+    destination.parent.mkdir(parents=True,exist_ok=True)
     destination.write_bytes(ET.tostring(output,encoding='utf-8',xml_declaration=True))
-    (destination.parent/'emblem-origin.txt').write_text('Optional upstream game emblem\n'+URL+'\nSHA256 '+SHA256+'\nGame branding: Square Enix / PlatinumGames; community trace: gigsoll.\nNot covered by the project GPL.\n')
+    (destination.parent/'emblem-origin.txt').write_text('Upstream YoRHa game emblem\n'+URL+'\nSHA256 '+SHA256+'\nGame branding: Square Enix / PlatinumGames; community trace: gigsoll.\nNot covered by the project GPL.\n')

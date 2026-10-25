@@ -34,7 +34,7 @@ The audit encountered an older Zen AppImage crashing with `wp_image_description_
 
 | Check | Result |
 | --- | --- |
-| 23 automated tests, including native SVG loading and floating-window regression checks | Passed on Fedora 44, 2026-10-25 |
+| 25 automated tests, including native SVG loading, emblem staging and floating-window regression checks | Passed on Fedora 44, 2026-10-25 |
 | Real old-Python venv rebuild and transaction recovery | Passed |
 | Installed and newly staged standalone `Hyprland --verify-config` | Passed |
 | Live day/night switch, all managed files compared, then restored to original mode | Passed |

@@ -36,13 +36,14 @@ Python GI, Cairo, NumPy, psutil and fontTools come from native packages. Calenda
 | `--keyboard us` | Standalone XKB layout, e.g. `it` or `us,de` |
 | `--fedora-copr` | Explicitly enable the two documented community repositories on Fedora |
 | `--deps` / `--no-deps` | Install native packages / use existing prerequisites |
-| `--game-emblem` | Fetch pinned optional game logo; default artwork is original |
 | `--sddm` | Stage greeter and print separate privileged installation command |
 | `--phonecam` | Add DroidCam button; CLI/loopback setup remains separate |
 | `--activate` | Reload Hyprland, restart Waybar and selected widgets now |
 | `--dry-run` | Plan only, with no network access or writes |
 | `--target PATH` | Stage in a different home; requires `--no-deps`, prohibits activation |
 | `--no-assets`, `--no-venv` | Test/staging shortcuts; result is incomplete for normal daily use |
+
+Every normal install uses the YoRHa game emblem, including unattended installs. Its SVG is downloaded from the checksum-pinned source described in [asset credits](../THIRD_PARTY.md), so internet access is required. If that download fails or its checksum differs, staging stops before managed user files are replaced. There is no logo selection or alternative crest. The old `--game-emblem` flag is still accepted for compatibility but is no longer needed. `--no-assets` skips the emblem download and wallpaper generation for incomplete test/staging installs. `--dry-run` never downloads anything.
 
 Overlay preserves the *main* config and its existing startup. It still replaces managed application configuration files and selected shortcut bindings. Review the plan. If another framework autostarts a second bar, notification daemon or wallpaper recoloring script, disable its conflicting commands in your own configuration. The guarded startup helper avoids launching duplicate standard process names but cannot control other frameworks' custom services.
 

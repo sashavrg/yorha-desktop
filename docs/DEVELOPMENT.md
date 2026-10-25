@@ -13,7 +13,7 @@
 
 `@HOME@` and `@RUNTIME@` tokens are rendered into destination configuration. Systemd units use `%h`; runtime spectrum data lives in the user's runtime directory. No account URLs, real task snapshots, user IDs, GPU driver settings or named physical outputs belong in payload files.
 
-The theme uses standard `~/.config` and `~/.local` roots. Alternate `--target` homes are for staging and cannot activate the live session. `--no-assets --no-venv --no-deps` permits network-free file transaction tests on plain Python.
+The theme uses standard `~/.config` and `~/.local` roots. Alternate `--target` homes are for staging and cannot activate the live session. `--no-assets --no-venv --no-deps` permits network-free file transaction tests on plain Python. `--no-assets` skips both the emblem download and wallpaper generation; such staging installs are incomplete and must not be used for visual previews. Normal installs download the pinned YoRHa emblem before generating assets.
 
 ## Checks
 

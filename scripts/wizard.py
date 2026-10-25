@@ -44,10 +44,11 @@ def parser():
     dep.add_argument('--no-deps', dest='deps', action='store_false')
     p.set_defaults(deps=None)
     p.add_argument('--no-venv', action='store_true', help='Skip calendar venv creation (for staging/tests only)')
-    p.add_argument('--no-assets', action='store_true', help='Skip wallpaper generation (for staging/tests only)')
+    p.add_argument('--no-assets', action='store_true', help='Skip emblem download and wallpaper generation (for staging/tests only)')
     p.add_argument('--no-bindings', action='store_true', help='Keep existing key bindings; add theme/startup only')
     p.add_argument('--keyboard', default='us', help='XKB layout for standalone config')
-    p.add_argument('--game-emblem', action='store_true', help='Download optional community game emblem; see THIRD_PARTY.md')
+    # Accept the old opt-in flag so existing install commands still work.
+    p.add_argument('--game-emblem', action='store_true', help=argparse.SUPPRESS)
     p.add_argument('--phonecam', action='store_true', help='Add optional DroidCam button (DroidCam CLI must be installed separately)')
     p.add_argument('--sddm', action='store_true', help='Stage optional SDDM theme and print its separate sudo installation command')
     p.add_argument('--activate', action='store_true', help='Reload live Hyprland and restart bar/widgets after installation')
@@ -73,7 +74,6 @@ def choose(args):
             if yes(title, item in args.components): args.components.add(item)
             else: args.components.discard(item)
         args.no_bindings=not yes('Install YoRHa shortcuts (listed in the plan)', not args.no_bindings)
-        args.game_emblem=yes('Use optional upstream game emblem (separate rights; default is an original crest)', args.game_emblem)
         args.phonecam=yes('Add optional USB / Wi-Fi DroidCam button (requires DroidCam CLI)', args.phonecam)
         args.sddm=yes('Prepare optional SDDM login theme for separate installation', args.sddm)
         if args.deps is None: args.deps=yes('Install native prerequisites with the distribution package manager', bool(args.distro))
@@ -99,7 +99,7 @@ def plan(args):
     print('  Hyprland:   '+args.layout+(' (preserve main config, append one source)' if args.layout=='overlay' else ' (replace main config; back up previous file)'))
     print('  Palette:    '+args.mode)
     print('  Components: '+', '.join(sorted(args.components)))
-    print('  Emblem:     '+('checksum-pinned upstream download' if args.game_emblem else 'bundled original wing crest'))
+    print('  Emblem:     YoRHa game emblem (checksum-pinned upstream download)')
     print('  Backups:    ~/.local/state/yorha/backups/<UTC timestamp>/')
     print('  Recovery:   yorha-restore <backup> (or python3 scripts/restore.py <backup>)')
     print('  Startup:    guarded bar/notifications/wallpaper + selected user services at next login')
@@ -225,11 +225,10 @@ def stage(args, folder):
                   exclude_outputs=['HEADLESS-','Virtual-','Sunshine'])
     if not (args.target/'.config/yorha/settings.json').exists():
         (flags/'settings.json').write_text(json.dumps(defaults,indent=2)+'\n')
-    if args.game_emblem:
+    if not args.no_assets:
         sys.path.insert(0,str(REPO/'scripts'))
         from fetch_emblem import fetch
         fetch(root/'assets/yorha-emblem.svg')
-    if not args.no_assets:
         subprocess.run(['/usr/bin/python3',str(root/'render-interface.py')],check=True)
         if args.sddm:
             subprocess.run(['/usr/bin/python3',str(REPO/'scripts/prepare-sddm.py'),str(root)],check=True)

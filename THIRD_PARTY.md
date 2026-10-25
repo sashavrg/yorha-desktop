@@ -4,15 +4,15 @@ This unofficial fan theme is inspired by NieR:Automata's menu, quest log and HUD
 
 ## Original project assets
 
-The procedural mesh/traces/rings wallpaper generator, original default wing crest, desktop panel layout, native Sound Waves geometry and installer are project source distributed under GPL-3.0-or-later. Generated wallpapers are made locally; game screenshots, the author's concept reference image and character illustrations are not redistributed.
+The procedural mesh/traces/rings wallpaper generator, desktop panel layout, native Sound Waves geometry and installer are project source distributed under GPL-3.0-or-later. Generated wallpapers are made locally; game screenshots, the author's concept reference image and character illustrations are not redistributed.
 
 Visual references: [Interface In Game menu archive](https://interfaceingame.com/games/nierautomata/) and the game's HUD: Sound Waves chip. Reference captures are not included in this repository. README previews are newly rendered with synthetic metadata/local demo tasks; they are not screenshots of the author's accounts or desktop session.
 
-## Optional game emblem
+## Game emblem download
 
-The wizard can download gigsoll's [community SVG trace](https://github.com/gigsoll/YoRHaLogo) from one pinned revision, verify its SHA-256, crop the viewBox and remove editor metadata. Source: `YORHA_clear.svg`, revision `5e24e32cae8a3028b87676f87a58962182975115`; SHA-256 `fa1e237c8f19685d41554942f0180e5f7fe278546a0685f3c09d48c882352477`.
+Every normal install downloads gigsoll's [community SVG trace](https://github.com/gigsoll/YoRHaLogo) from one pinned revision, verifies its SHA-256, crops the viewBox and removes editor metadata. Source: `YORHA_clear.svg`, revision `5e24e32cae8a3028b87676f87a58962182975115`; SHA-256 `fa1e237c8f19685d41554942f0180e5f7fe278546a0685f3c09d48c882352477`.
 
-The upstream repository does not supply a license grant. Therefore the trace is **not bundled**, is **not covered by this project's GPL**, and is downloaded only if the user explicitly selects it. The underlying game emblem remains its owners' artwork. Attribution does not grant redistribution rights. The original crest provides a complete install without this optional asset.
+The upstream repository does not supply a license grant. The trace is **not bundled** and is **not covered by this project's GPL**; it is fetched separately during installation. The underlying game emblem remains its owners' artwork. Attribution does not grant redistribution rights. The YoRHa emblem is the only supplied logo option; there is no bundled alternative crest.
 
 ## SDDM
 

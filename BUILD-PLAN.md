@@ -4,7 +4,7 @@
 2. Make monitor selection, paths, timezone and optional planner connections portable. Provide local tasks without requiring the author's cockpit service.
 3. Add a terminal wizard with a readable plan, Fedora/Arch dependency installation, dry run, component selection, standalone/overlay modes, file backups, recovery and diagnostics.
 4. Preserve day/night palettes, floating GTK panels, calendar/quests, Sound Waves HUD, wallpapers, lock/standby and application themes. Keep SDDM explicitly optional.
-5. Retain third-party licenses and attribution; supply an original crest by default and a checksum-pinned optional upstream game-emblem download.
+5. Retain third-party licenses and attribution; download the checksum-pinned upstream YoRHa game emblem for every normal install without bundling it or offering an alternative crest.
 6. Test in temporary homes, including symlinked dotfiles, install/update/restore, interrupted installs and path validation. Render synthetic day/night previews and scan the complete publication tree for private data.
 7. Publish the reviewed initial history under sashavrg/yorha-desktop and verify the public repository.
 

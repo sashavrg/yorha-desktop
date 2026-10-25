@@ -49,7 +49,7 @@ For an unattended configuration install with prerequisites already present:
 - Procedural landscape/portrait wallpapers with a woven grid, edge fringing and gentle lens distortion. Generated locally from source.
 - Optional SDDM theme and optional DroidCam USB/Wi-Fi button.
 
-Public defaults use an original wing crest, packaged Noto Sans / JetBrains Mono, and system Breeze icons. For the community trace of the game logo, select it in the wizard or add `--game-emblem`. The upstream SVG is checksum pinned and downloaded only when requested; it is not bundled or relicensed. See [asset credits](THIRD_PARTY.md).
+The **YoRHa game emblem is used throughout**, alongside packaged Noto Sans / JetBrains Mono and system Breeze icons. Every normal install downloads a community SVG trace from a pinned upstream revision and verifies its checksum before generating the wallpapers and other visuals. This also applies to unattended `--yes` installs; there is no separate logo choice or alternative crest. Internet access is required for the emblem download. The game SVG is not bundled or relicensed. See [asset credits](THIRD_PARTY.md).
 
 ## Daily controls
 

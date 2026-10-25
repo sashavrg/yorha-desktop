@@ -162,6 +162,44 @@ class PaletteTests(unittest.TestCase):
                 self.assertEqual((home/'.local/share/yorha/mode').read_text().strip(),mode)
 
 
+class EmblemTests(unittest.TestCase):
+    def test_normal_install_downloads_yorha_emblem_before_rendering(self):
+        from unittest.mock import patch
+        import wizard
+        with tempfile.TemporaryDirectory() as work:
+            home=Path(work)/'home';home.mkdir()
+            stage=Path(work)/'stage';stage.mkdir()
+            args=wizard.choose(wizard.parser().parse_args([
+                '--yes','--no-deps','--no-venv','--target',str(home)]))
+            emblem=stage/'.local/share/yorha/assets/yorha-emblem.svg'
+            data=b'<svg xmlns="http://www.w3.org/2000/svg"><title>Downloaded emblem</title></svg>'
+            def download(destination):
+                destination.parent.mkdir(parents=True,exist_ok=True)
+                destination.write_bytes(data)
+            def render(command,**kwargs):
+                self.assertEqual(emblem.read_bytes(),data)
+                self.assertTrue(command[1].endswith('/render-interface.py'))
+            with patch('fetch_emblem.fetch',side_effect=download) as fetch, \
+                 patch.object(wizard.subprocess,'run',side_effect=render) as renderer:
+                wizard.stage(args,stage)
+            fetch.assert_called_once_with(emblem)
+            renderer.assert_called_once()
+            self.assertEqual(list(home.iterdir()),[])
+
+    def test_failed_emblem_download_leaves_user_files_untouched(self):
+        from unittest.mock import patch
+        import wizard
+        with tempfile.TemporaryDirectory() as work:
+            home=Path(work)/'home';home.mkdir()
+            original=home/'keep.txt';original.write_text('existing data')
+            args=wizard.choose(wizard.parser().parse_args([
+                '--yes','--no-deps','--no-venv','--target',str(home)]))
+            with patch('fetch_emblem.fetch',side_effect=ValueError('Emblem checksum mismatch')):
+                with self.assertRaises(ValueError):wizard.apply(args)
+            self.assertEqual(list(home.iterdir()),[original])
+            self.assertEqual(original.read_text(),'existing data')
+
+
 class DependencyTests(unittest.TestCase):
     def test_fedora_resolves_wayland_provider_and_reuses_installed_stack(self):
         from unittest.mock import patch
