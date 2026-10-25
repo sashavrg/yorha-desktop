@@ -34,7 +34,7 @@ The audit encountered an older Zen AppImage crashing with `wp_image_description_
 
 | Check | Result |
 | --- | --- |
-| 16 automated checks, including native SVG loading | Passed on Fedora 44 |
+| 23 automated tests, including native SVG loading and floating-window regression checks | Passed on Fedora 44, 2026-10-25 |
 | Real old-Python venv rebuild and transaction recovery | Passed |
 | Installed and newly staged standalone `Hyprland --verify-config` | Passed |
 | Live day/night switch, all managed files compared, then restored to original mode | Passed |
@@ -42,6 +42,7 @@ The audit encountered an older Zen AppImage crashing with `wp_image_description_
 | Main desktop panels on landscape; agenda only on portrait; none on streaming output | Confirmed with layer inspection |
 | Single-window floating/centering within reserved work area, landscape and rotated portrait | Passed |
 | Workspace float/restore with an existing floating dialog | Passed |
+| Floating-window transfers between portrait and landscape, preserving monitor-relative dimensions and position | Passed live; roundtrip restored geometry within one pixel |
 | Default-browser launch after local app-specific repair | Passed |
 | Standby preview and clean dismissal | Passed |
 | Shared Cava analyser and graphical spectrum output | Running |

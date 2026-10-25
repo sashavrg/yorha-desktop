@@ -56,6 +56,10 @@ export PATH="$HOME/.local/bin:$PATH"
 
 Persist that line in your preferred shell configuration. The installer does not overwrite shell startup files. For Starship, add its normal shell initialization yourself; for example `eval "$(starship init bash)"` in Bash. The Neovim colorscheme is installed without replacing your editor setup; load it with `:colorscheme yorha`. Btop's palette is available as `yorha` in its theme selector. These optional apps keep their own startup/settings choices.
 
+### Overlay workspace movement
+
+Overlay mode retains your existing numbered workspace-move bindings. To make floating windows keep the same percentage width, height and placement when moving between monitors, change those bindings to execute `"$HOME/.local/bin/yorha-move-workspace" NUMBER`, where NUMBER is 1–10. Match the key or keycode used by your existing binding when replacing it, so both actions do not run on the same shortcut. Standalone mode installs the helper bindings automatically.
+
 ## Recovery
 
 Every managed write is preceded by a private backup record under `~/.local/state/yorha/backups`. The backup manifest is updated before each destination is changed. A caught installation error rolls back file changes. A hard process kill/power loss leaves a recoverable manifest; use the restore script printed near the start of installation.

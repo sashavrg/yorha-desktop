@@ -2,6 +2,8 @@
 
 A NieR:Automata inspired Hyprland desktop: parchment and graphite palettes, floating menu panels, a quest log, procedural wallpapers and a rotating standby crest.
 
+**Status: public beta.** Intended for users comfortable with Hyprland configuration. Validated on an existing Fedora 44 desktop with Hyprland 0.56.2 and Python 3.14.8. Fresh Fedora/Arch installations, current Arch runtime behavior and fractional scaling still need validation. The installer does not currently enforce Hyprland version compatibility; review [validation and scope](#validation-and-scope) before installing.
+
 ![Day palette with synthetic preview data](docs/images/day.webp)
 ![Night palette with synthetic preview data](docs/images/night.webp)
 
@@ -15,7 +17,7 @@ cd yorha-desktop
 ./install.sh
 ```
 
-The terminal wizard walks through layout, palette, widgets, standby, application themes, optional assets and dependency installation. On Fedora it also offers `solopasha/hyprland` and `atim/starship` COPRs, disabled unless selected; Arch uses its official repositories. It shows a plan before applying anything. Package managers retain their own confirmation prompts. There is no `curl | sh`, AUR helper or whole-system upgrade. Fedora users can explicitly opt into the community repositories described below.
+The terminal wizard walks through layout, palette, widgets, standby, application themes, optional assets and dependency installation. On Fedora it also offers `solopasha/hyprland` and `atim/starship` COPRs, disabled unless selected; Arch uses its official repositories. It shows a plan before applying anything. Package managers retain their own confirmation prompts. There is no `curl | sh`, AUR helper or whole-system upgrade. See [Fedora package sources](docs/INSTALL.md#fedora-package-sources) for the community repository options.
 
 - **Overlay:** retains your main Hyprland config and monitor rules; adds one source line. Managed application configs are backed up and replaced. Existing startup commands remain: review them if another dotfile framework also changes wallpapers or colors.
 - **Standalone:** writes a small complete Hyprland config with automatic monitor discovery and workspace/navigation bindings. It backs up an existing main config first.
@@ -70,6 +72,8 @@ Public defaults use an original wing crest, packaged Noto Sans / JetBrains Mono,
 
 The wizard can leave your key bindings alone. Standalone also supplies Super + Q/F, Super + 1…0, Super + Shift + 1…0, Super + H/J/K/semicolon and Super + mouse drag. Moving a floating window with Super + Shift + 1…0 preserves its width, height and position as percentages of the monitor's usable area. An 80% × 80% window remains 80% × 80% when moved between landscape and portrait displays.
 
+**Overlay installs retain existing numbered workspace-move shortcuts.** To enable the proportional movement described above, route those shortcuts through `~/.local/bin/yorha-move-workspace NUMBER` (1–10) in your own Hyprland config. The wizard currently adds these bindings automatically only in standalone mode. See [overlay configuration](docs/INSTALL.md#overlay-workspace-movement).
+
 ```sh
 yorha-mode day
 yorha-mode night
@@ -115,9 +119,9 @@ The portrait display receives Calendar/Quests when present; otherwise they use t
 
 ## Validation and scope
 
-File transaction tests cover leaf and parent symlinks, outside-home refusal, interrupted installs, edit protection, idempotent overlay setup, update/restore, dry-run behavior and task revision conflicts. A ready-to-enable [GitHub Actions template](docs/ci-checks.yml) runs these without touching a real desktop; it is not activated in the initial publication. Development checks also stage complete installs, render both palettes, validate generated Hyprland configuration and check SDDM assets.
+Automated tests cover leaf and parent symlinks, outside-home refusal, interrupted installs, edit protection, idempotent overlay setup, update/restore, dry-run behavior, task revision conflicts and floating-window movement. A native SVG-loading check also runs when its GTK dependencies are available. A ready-to-enable [GitHub Actions template](docs/ci-checks.yml) runs the suite without touching a real desktop; no GitHub Actions workflow is currently enabled. Development checks also stage complete installs, render both palettes, validate generated Hyprland configuration and check SDDM assets.
 
-The first release was staged and rendered on Fedora 42 with Hyprland 0.51.1. The upgrade audit also checks Fedora 44, Python 3.14 and Hyprland 0.56.2: live palettes, widgets, shortcuts, both monitor orientations and SDDM preview. Fedora and Arch package scripts are provided; fresh virtual-machine installs and current Arch runtime behavior have **not** been validated. Other distributions require manual dependency installation. This is a Hyprland/Wayland setup; GNOME/KDE sessions and X11 are outside the installer scope. Nonstandard XDG config/data roots are not currently supported.
+The initial version was staged and rendered on Fedora 42 with Hyprland 0.51.1. The current upgrade audit checks Fedora 44, Python 3.14.8 and Hyprland 0.56.2: live palettes, widgets, shortcuts, both monitor orientations, proportional floating-window transfers and SDDM preview. The current configuration is validated against Hyprland 0.56.2; the historical staging check does not establish compatibility with older versions after subsequent configuration changes. Fedora and Arch package scripts are provided; fresh virtual-machine installs, current Arch runtime behavior and fractional scaling have **not** been validated. Other distributions require manual dependency installation. This is a Hyprland/Wayland setup; GNOME/KDE sessions and X11 are outside the installer scope. Nonstandard XDG config/data roots are not currently supported. No tagged release is available yet.
 
 Phone launchers, personal cloud accounts, private planner servers, streaming servers, GPU drivers and machine-specific monitor layouts are outside this repository. The optional streaming idle guard recognizes `$XDG_RUNTIME_DIR/sunshine-streaming`; your own stream hooks must maintain it.
 
