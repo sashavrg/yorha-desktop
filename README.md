@@ -68,7 +68,7 @@ Public defaults use an original wing crest, packaged Noto Sans / JetBrains Mono,
 | Super + Alt + S | Preview standby |
 | Super + Alt + R | Reload theme components |
 
-The wizard can leave your key bindings alone. Standalone also supplies Super + Q/F, Super + 1…0, Super + Shift + 1…0, Super + H/J/K/semicolon and Super + mouse drag.
+The wizard can leave your key bindings alone. Standalone also supplies Super + Q/F, Super + 1…0, Super + Shift + 1…0, Super + H/J/K/semicolon and Super + mouse drag. Moving a floating window with Super + Shift + 1…0 preserves its width, height and position as percentages of the monitor's usable area. An 80% × 80% window remains 80% × 80% when moved between landscape and portrait displays.
 
 ```sh
 yorha-mode day

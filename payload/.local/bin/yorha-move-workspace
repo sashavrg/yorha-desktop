@@ -1,0 +1,145 @@
+#!/usr/bin/env python3
+"""Move the active window to a numbered workspace and refit floats to its monitor."""
+import argparse
+import fcntl
+import json
+import math
+import os
+from pathlib import Path
+import subprocess
+import sys
+import time
+
+
+def query(name):
+    return json.loads(subprocess.check_output(['hyprctl', name, '-j'], text=True))
+
+
+def dispatch(name, args):
+    result = subprocess.run(['hyprctl', 'dispatch', name, args], capture_output=True, text=True, check=True)
+    if result.stdout.strip() != 'ok':
+        raise RuntimeError(result.stdout.strip() or result.stderr.strip())
+
+
+def usable_area(monitor):
+    width, height = monitor['width'], monitor['height']
+    if monitor.get('transform', 0) % 2:
+        width, height = height, width
+    scale = monitor.get('scale', 1) or 1
+    left, top, right, bottom = monitor.get('reserved', [0, 0, 0, 0])
+    width, height = width / scale - left - right, height / scale - top - bottom
+    return monitor['x'] + left, monitor['y'] + top, width, height
+
+
+def geometry(size, at, source_area, target_area):
+    sx, sy, sw, sh = source_area
+    tx, ty, tw, th = target_area
+    # Carry the rectangle's proportions within the work area across monitors.
+    # A float occupying 80% of each axis should also occupy 80% on a rotated
+    # display, so its contents reflow to the destination monitor's shape.
+    width = max(1, min(round(size[0] * tw / max(1, sw)), math.floor(tw - 24)))
+    height = max(1, min(round(size[1] * th / max(1, sh)), math.floor(th - 24)))
+    # Preserve the window's center as a fraction of the usable work area.
+    center_x = (at[0] + size[0] / 2 - sx) / max(1, sw)
+    center_y = (at[1] + size[1] / 2 - sy) / max(1, sh)
+    center_x = min(1.0, max(0.0, center_x))
+    center_y = min(1.0, max(0.0, center_y))
+    x = tx + center_x * tw - width / 2
+    y = ty + center_y * th - height / 2
+    x = max(tx + 12, min(x, tx + tw - width - 12))
+    y = max(ty + 12, min(y, ty + th - height - 12))
+    return width, height, round(x), round(y)
+
+
+def reached_destination(client, workspace, target_workspace):
+    return bool(client and target_workspace
+                and client.get('workspace', {}).get('id') == workspace
+                and client.get('monitor') == target_workspace.get('monitorID'))
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('workspace', type=int, help='Destination workspace number')
+    args = parser.parse_args()
+    if not 1 <= args.workspace <= 10:
+        parser.error('workspace must be between 1 and 10')
+
+    runtime = Path(os.environ.get('XDG_RUNTIME_DIR', f'/run/user/{os.getuid()}'))
+    with (runtime / 'yorha-move-workspace.lock').open('w') as lock:
+        try:
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            return
+
+        window = query('activewindow')
+        if not window.get('address') or not window.get('mapped', True):
+            return
+        address = 'address:' + window['address']
+        if not window.get('floating') or window.get('fullscreen'):
+            dispatch('movetoworkspace', f'{args.workspace},{address}')
+            dispatch('focuswindow', address)
+            return
+
+        monitors = {monitor['id']: monitor for monitor in query('monitors')}
+        source = monitors.get(window.get('monitor'))
+        if source is None:
+            dispatch('movetoworkspace', f'{args.workspace},{address}')
+            dispatch('focuswindow', address)
+            return
+        source_area = usable_area(source)
+        dispatch('movetoworkspace', f'{args.workspace},{address}')
+
+        # A workspace ID can update before the client's monitor ID does. Wait for
+        # both to agree; using the old monitor here can place the window off-screen.
+        moved = None
+        target_workspace = None
+        for _ in range(40):
+            moved = next((client for client in query('clients') if client.get('address') == window['address']), None)
+            target_workspace = next((ws for ws in query('workspaces') if ws.get('id') == args.workspace), None)
+            if reached_destination(moved, args.workspace, target_workspace):
+                break
+            time.sleep(0.025)
+        if not reached_destination(moved, args.workspace, target_workspace):
+            raise RuntimeError(f"window did not settle on workspace {args.workspace}'s monitor")
+        # Activate the destination window before applying position changes: Hyprland
+        # may otherwise finish its workspace move after an early pixel-move request.
+        dispatch('focuswindow', address)
+        time.sleep(0.1)
+        if not moved.get('floating') or moved.get('fullscreen'):
+            dispatch('focuswindow', address)
+            return
+        target = monitors.get(moved.get('monitor'))
+        if target is None:
+            return
+        target_area = usable_area(target)
+        if source['id'] == target['id']:
+            # Same-monitor workspace moves should not disturb an already valid float.
+            x, y, width, height = window['at'][0], window['at'][1], *window['size']
+            tx, ty, tw, th = target_area
+            if width <= tw - 24 and height <= th - 24 and x >= tx + 12 and y >= ty + 12 and x + width <= tx + tw - 12 and y + height <= ty + th - 12:
+                dispatch('focuswindow', address)
+                return
+        width, height, x, y = geometry(window['size'], window['at'], source_area, target_area)
+        center_x, center_y = x + width / 2, y + height / 2
+        if (width, height) != tuple(window['size']):
+            dispatch('resizewindowpixel', f'exact {width} {height},{address}')
+            # Wait for size constraints/configure acknowledgements.
+            time.sleep(0.1)
+            current = next((client for client in query('clients') if client.get('address') == window['address']), moved)
+            width, height = current['size']
+        tx, ty, tw, th = target_area
+        # Keep the intended center if the application enforces a size hint.
+        x = max(tx + 12, min(center_x - width / 2, tx + tw - width - 12))
+        y = max(ty + 12, min(center_y - height / 2, ty + th - height - 12))
+        # Hyprland's pixel dispatcher requires integer coordinates. Decimal
+        # values (even "4024.0") can return "ok" without moving the window.
+        dispatch('movewindowpixel', f'exact {round(x)} {round(y)},{address}')
+
+
+
+if __name__ == '__main__':
+    try:
+        main()
+    except Exception as exc:
+        print(f'yorha-move-workspace: {exc}', file=sys.stderr)
+        raise SystemExit(1)

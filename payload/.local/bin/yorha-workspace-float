@@ -23,6 +23,17 @@ def area(monitor):
     left,top,right,bottom=monitor.get('reserved',[0,0,0,0])
     return monitor['x']+left,monitor['y']+top,w/scale-left-right,h/scale-top-bottom
 
+def fit(size,position,monitor):
+    x,y,aw,ah=area(monitor)
+    w,h=size
+    # Scale uniformly when a client is larger than this monitor. Clamping each
+    # axis independently distorts its aspect ratio on portrait displays.
+    factor=min(1.0,(aw-24)/max(1,w),(ah-24)/max(1,h))
+    w,h=max(1,int(w*factor)),max(1,int(h*factor))
+    wx=max(x+12,min(position[0],x+aw-w-12))
+    wy=max(y+12,min(position[1],y+ah-h-12))
+    return w,h,round(wx),round(wy)
+
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--workspace',type=int,help='Target workspace (default: active)')
@@ -55,10 +66,7 @@ def main():
         for window in windows:
             monitor=monitors.get(window['monitor'])
             if monitor is None: continue
-            x,y,aw,ah=area(monitor)
-            w,h=window['size'];w=max(1,min(w,int(aw-24)));h=max(1,min(h,int(ah-24)))
-            wx=max(x+12,min(window['at'][0],x+aw-w-12))
-            wy=max(y+12,min(window['at'][1],y+ah-h-12))
+            w,h,wx,wy=fit(window['size'],window['at'],monitor)
             address='address:'+window['address']
             dispatch('setfloating',address)
             dispatch('resizewindowpixel',f'exact {w} {h},{address}')

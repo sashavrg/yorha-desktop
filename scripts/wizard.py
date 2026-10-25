@@ -164,7 +164,8 @@ def standalone(args):
         'bindm = SUPER, mouse:272, movewindow','bindm = SUPER, mouse:273, resizewindow']
     for i in range(1,11):
         key=str(i%10)
-        lines += [f'bind = SUPER, {key}, workspace, {i}', f'bind = SUPER SHIFT, {key}, movetoworkspace, {i}']
+        lines += [f'bind = SUPER, {key}, workspace, {i}',
+            f'bind = SUPER SHIFT, {key}, exec, "$HOME/.local/bin/yorha-move-workspace" {i}']
     lines += ['source = $HOME/.config/hypr/yorha-session.conf']
     return '\n'.join(lines)+'\n'
 
