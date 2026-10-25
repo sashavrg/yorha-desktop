@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Read-only dependency, asset and live Hyprland diagnostics."""
+"""Read-only dependency, runtime, service and live Hyprland diagnostics."""
 import importlib.util
 import json
 import os
@@ -8,11 +8,26 @@ import shutil
 import subprocess
 import sys
 
-root=Path.home()/'.local/share/yorha'
+home=Path.home()
+root=home/'.local/share/yorha'
 failed=[]
+env=dict(os.environ,PYTHONNOUSERSITE='1')
+env.setdefault('XDG_RUNTIME_DIR',f'/run/user/{os.getuid()}')
+
 def report(ok,message):
     print(('  OK  ' if ok else '  !!  ')+message)
-    if not ok: failed.append(message)
+    if not ok:failed.append(message)
+
+def run(command):
+    try:return subprocess.run(command,env=env,capture_output=True,text=True,timeout=8)
+    except (OSError,subprocess.TimeoutExpired):return None
+
+def selected(name):
+    if (home/'.config/yorha'/(name+'-enabled')).exists():return True
+    unit=home/'.config/systemd/user'/(name+'.service')
+    if not unit.exists():return False
+    result=run(['systemctl','--user','is-enabled',name+'.service'])
+    return result is not None and result.returncode==0
 
 print('■ YoRHa / SYSTEM DIAGNOSTICS')
 for command in ['hyprctl','waybar','rofi','swww','kitty','swaync','cava','pactl','playerctl','hyprlock']:
@@ -20,22 +35,37 @@ for command in ['hyprctl','waybar','rofi','swww','kitty','swaync','cava','pactl'
 for module in ['gi','cairo','numpy']:
     report(importlib.util.find_spec(module) is not None,'Python '+module)
 probe="import gi;gi.require_version('Gtk','3.0');gi.require_version('GtkLayerShell','0.1');gi.require_version('Rsvg','2.0');from gi.repository import Gtk,GtkLayerShell,Rsvg"
-result=subprocess.run([sys.executable,'-c',probe],capture_output=True)
-report(result.returncode==0,'GTK 3 / layer shell / Rsvg introspection')
+result=run([sys.executable,'-c',probe])
+report(result is not None and result.returncode==0,'GTK 3 / layer shell / Rsvg introspection')
 if root.exists():
     for mode in ['day','night']:
         image=root/'wallpapers/interface'/('night' if mode=='night' else '')/'yorha-2560x1440.png'
         report(image.is_file(),mode+' wallpaper')
-    if (Path.home()/'.config/yorha/yorha-cockpit-widget-enabled').exists():
-        python=root/'calendar-venv/bin/python'
-        result=subprocess.run([str(python),'-c','import gi,icalendar,recurring_ical_events,psutil'],capture_output=True) if python.exists() else None
-        report(result is not None and result.returncode==0,'Calendar runtime')
-    if os.environ.get('HYPRLAND_INSTANCE_SIGNATURE') and shutil.which('hyprctl'):
-        result=subprocess.run(['hyprctl','configerrors'],capture_output=True,text=True)
-        output=result.stdout.strip()
-        report(result.returncode==0 and (not output or output=='ok'),'Hyprland config errors')
-        if output and output!='ok': print(output)
-    else: print('  --  No live Hyprland session; runtime checks skipped')
-else: print('  --  Theme not installed in this home')
+    units=[name for name in ['yorha-desktop','yorha-cockpit-widget','yorha-soundwave'] if selected(name)]
+    if any(name in units for name in ['yorha-desktop','yorha-cockpit-widget']):
+        result=run([str(root/'calendar-venv/bin/python'),'-c','import gi,cairo,icalendar,recurring_ical_events,psutil'])
+        report(result is not None and result.returncode==0,'Calendar/widget runtime for the current Python')
+        if result is None or result.returncode:print('      Rerun the installer to back up and rebuild a stale calendar environment.')
+    for unit in units:
+        result=run(['systemctl','--user','is-active',unit+'.service'])
+        report(result is not None and result.returncode==0,unit+' service')
+    # A terminal/SSH environment may omit Hyprland's variables even while the session is running.
+    selector=[]
+    if not env.get('HYPRLAND_INSTANCE_SIGNATURE'):
+        result=run(['hyprctl','instances','-j'])
+        try:instances=json.loads(result.stdout) if result and result.returncode==0 else []
+        except ValueError:instances=[]
+        if len(instances)==1:selector=['-i',instances[0]['instance']]
+    if env.get('HYPRLAND_INSTANCE_SIGNATURE') or selector:
+        result=run(['hyprctl',*selector,'configerrors'])
+        output=result.stdout.strip() if result else ''
+        report(result is not None and result.returncode==0 and output in ['','ok'],'Hyprland config errors')
+        if output and output!='ok':print(output)
+        result=run(['hyprctl',*selector,'binds','-j'])
+        try:bindings=json.loads(result.stdout) if result and result.returncode==0 else []
+        except ValueError:bindings=[]
+        report(not any('workspaceopt' in b.get('arg','') for b in bindings),'No retired workspaceopt shortcut')
+    else:print('  --  No unique live Hyprland session; runtime checks skipped')
+else:print('  --  Theme not installed in this home')
 print('\nPrivate calendar URLs and task contents are never displayed by this command.')
 sys.exit(1 if failed else 0)

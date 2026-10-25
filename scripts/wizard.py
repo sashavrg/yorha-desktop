@@ -105,7 +105,7 @@ def plan(args):
     print('  Startup:    guarded bar/notifications/wallpaper + selected user services at next login')
     print('  Live reload:'+(' yes' if args.activate else ' no (current session stays as it is)'))
     if not args.no_bindings:
-        print('  Shortcuts:  Super+Enter terminal; D apps; E files; L lock; Space float; N comms')
+        print('  Shortcuts:  Super+Enter terminal; D apps; A windows; B browser; E files; L lock; Space float; N comms')
         print('              Super+Esc system; Super+Alt+N palette; R reload; S standby; W widgets')
     print('  Managed configs include Waybar, Rofi, notifications, Kitty and selected application palettes.')
     print('  Existing files and leaf symlinks are backed up before replacement.')
@@ -140,8 +140,11 @@ def session_config(args):
         'env = XDG_SESSION_TYPE,wayland']
     if 'apps' in args.components: lines.append('env = QT_QPA_PLATFORMTHEME,qt6ct')
     if not args.no_bindings:
-        bindings=[('SUPER','RETURN','kitty'),('SUPER','D','rofi -show drun'),('SUPER','E','xdg-open "$HOME"'),
+        bindings=[('SUPER','RETURN','kitty'),('SUPER','D','rofi -show drun'),
+            ('SUPER','E','xdg-open "$HOME"'),('SUPER','B','"$HOME/.local/bin/yorha-browser"'),
+            ('SUPER','A','rofi -show window'),
             ('SUPER','L','"$HOME/.local/bin/yorha-lock"'),('SUPER','SPACE','"$HOME/.local/bin/yorha-toggle-float"'),
+            ('SUPER ALT','SPACE','"$HOME/.local/bin/yorha-workspace-float"'),
             ('SUPER','N','swaync-client -t'),('SUPER','ESCAPE','"$HOME/.local/bin/yorha-power"'),
             ('SUPER ALT','N','"$HOME/.local/bin/yorha-mode" toggle'),('SUPER ALT','R','"$HOME/.local/bin/yorha-reload"')]
         if 'standby' in args.components: bindings.append(('SUPER ALT','S','"$HOME/.local/bin/yorha-standby" preview'))
@@ -240,8 +243,13 @@ def create_venv(args, tx):
     if args.no_venv or not args.components & {'desktop','agenda'}: return
     dest=args.target/'.local/share/yorha/calendar-venv'
     if dest.exists():
-        subprocess.run([str(dest/'bin/python'),'-c','import gi, cairo, psutil, icalendar, recurring_ical_events'],check=True,env=env)
-        return
+        try:
+            result=subprocess.run([str(dest/'bin/python'),'-c','import gi, cairo, psutil, icalendar, recurring_ical_events'],capture_output=True,env=env)
+            if result.returncode == 0: return
+        except OSError:
+            pass
+        print('Calendar runtime needs rebuilding for the current system Python; preserving it in the transaction backup.',flush=True)
+        tx.replace_directory('.local/share/yorha/calendar-venv')
     tx.generated_dir('.local/share/yorha/calendar-venv')
     subprocess.run(['/usr/bin/python3','-m','venv','--system-site-packages',str(dest)],check=True,env=env)
     subprocess.run([str(dest/'bin/python'),'-m','pip','install','--disable-pip-version-check','-r',str(args.target/'.local/share/yorha/calendar-requirements.txt')],check=True,env=env)

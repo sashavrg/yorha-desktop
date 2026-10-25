@@ -9,7 +9,7 @@
 - `payload`: explicit distributable source/config allowlist. Private source machine dotfiles are never exported at runtime.
 - `payload/.local/share/yorha`: GTK desktop/calendar code, renderer, shared Sound Waves daemon, palettes and optional greeter.
 - `addons/phonecam`: opt-in DroidCam process controller and USB/local-Wi-Fi connector.
-- `tests`: disposable-home transaction and task-state checks.
+- `tests`: disposable-home transaction, runtime-recovery and task-state checks, plus a native SVG-loader regression check when GTK dependencies are available.
 
 `@HOME@` and `@RUNTIME@` tokens are rendered into destination configuration. Systemd units use `%h`; runtime spectrum data lives in the user's runtime directory. No account URLs, real task snapshots, user IDs, GPU driver settings or named physical outputs belong in payload files.
 

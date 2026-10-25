@@ -228,11 +228,13 @@ class DesktopShell:
 
     def tint_emblem(self):
         import xml.etree.ElementTree as ET
+        # Glycin-based loaders sniff the XML bytes, including the SVG root namespace.
+        ET.register_namespace('', 'http://www.w3.org/2000/svg')
         svg=ET.fromstring((ROOT/'assets/yorha-emblem.svg').read_bytes())
         for path in svg.iter('{http://www.w3.org/2000/svg}path'):
             path.set('fill',PALETTES[self.palette]['ink'])
         loader=GdkPixbuf.PixbufLoader.new_with_type('svg')
-        loader.set_size(65,100);loader.write(ET.tostring(svg));loader.close()
+        loader.set_size(65,100);loader.write(ET.tostring(svg, encoding="utf-8", xml_declaration=True));loader.close()
         self.emblem.set_from_pixbuf(loader.get_pixbuf())
 
     def tick(self):

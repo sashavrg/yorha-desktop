@@ -55,9 +55,12 @@ Public defaults use an original wing crest, packaged Noto Sans / JetBrains Mono,
 | --- | --- |
 | Super + Enter | Kitty terminal |
 | Super + D | Application/search launcher |
+| Super + A | Window overview |
+| Super + B | Default browser at a valid blank page |
 | Super + E | Home folder in your default file manager |
 | Super + L | Authenticated lock |
 | Super + Space | Toggle floating, fit within the window's own monitor and center |
+| Super + Alt + Space | Reversibly float the workspace; preserve existing floating windows |
 | Super + N | Communications / notifications |
 | Super + Escape | System menu; destructive power actions require confirmation |
 | Super + Alt + N | Toggle day/night |
@@ -106,6 +109,7 @@ Recovery checks for subsequent edits before changing files. Save any edits you w
 - [SDDM login theme](docs/SDDM.md)
 - [USB/Wi-Fi DroidCam addon](docs/PHONECAM.md)
 - [Architecture and development](docs/DEVELOPMENT.md)
+- [Fedora 44 / Hyprland 0.56 upgrade checks](docs/UPGRADING.md)
 
 The portrait display receives Calendar/Quests when present; otherwise they use the primary physical display. Main panels prefer a landscape display. Layout reduces crowded cards on smaller single-monitor setups. EDID-less outputs are excluded by default; `include_edidless` enables them. Keep your own monitor rotation/scaling configuration. Typical targets are 1920×1080 or larger at 1× and a portrait companion; very small logical displays may need fewer panels. Waybar, widgets and wallpaper skip conventional headless/streaming outputs.
 
@@ -113,7 +117,7 @@ The portrait display receives Calendar/Quests when present; otherwise they use t
 
 File transaction tests cover leaf and parent symlinks, outside-home refusal, interrupted installs, edit protection, idempotent overlay setup, update/restore, dry-run behavior and task revision conflicts. A ready-to-enable [GitHub Actions template](docs/ci-checks.yml) runs these without touching a real desktop; it is not activated in the initial publication. Development checks also stage complete installs, render both palettes, validate generated Hyprland configuration and check SDDM assets.
 
-The first release was staged and rendered on Fedora 42 with Hyprland 0.51.1. Fedora and Arch package scripts are provided; fresh virtual-machine installs and current Arch runtime behavior have **not** been validated. Other distributions require manual dependency installation. This is a Hyprland/Wayland setup; GNOME/KDE sessions and X11 are outside the installer scope. Nonstandard XDG config/data roots are not currently supported.
+The first release was staged and rendered on Fedora 42 with Hyprland 0.51.1. The upgrade audit also checks Fedora 44, Python 3.14 and Hyprland 0.56.2: live palettes, widgets, shortcuts, both monitor orientations and SDDM preview. Fedora and Arch package scripts are provided; fresh virtual-machine installs and current Arch runtime behavior have **not** been validated. Other distributions require manual dependency installation. This is a Hyprland/Wayland setup; GNOME/KDE sessions and X11 are outside the installer scope. Nonstandard XDG config/data roots are not currently supported.
 
 Phone launchers, personal cloud accounts, private planner servers, streaming servers, GPU drivers and machine-specific monitor layouts are outside this repository. The optional streaming idle guard recognizes `$XDG_RUNTIME_DIR/sunshine-streaming`; your own stream hooks must maintain it.
 

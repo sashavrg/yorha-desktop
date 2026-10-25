@@ -1,0 +1,9 @@
+#!/usr/bin/env python3
+"""Open the configured default browser at a valid blank page or supplied URL."""
+import sys
+from gi.repository import Gio
+app = Gio.AppInfo.get_default_for_uri_scheme('https')
+if app is None:
+    print('No default HTTPS browser configured.', file=sys.stderr)
+    raise SystemExit(1)
+app.launch_uris(sys.argv[1:] or ['about:blank'], None)

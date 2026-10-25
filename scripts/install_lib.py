@@ -88,6 +88,20 @@ class Transaction:
         entry['after'] = 'absent'
         self.save()
 
+    def replace_directory(self, relative):
+        """Back up a generated runtime before rebuilding it for a new interpreter."""
+        target = validate(self.home, relative)
+        if target.is_symlink() or not target.is_dir():
+            raise InstallError('Expected an owned runtime directory: '+relative)
+        if any(f['path'] == relative for f in self.state['files']):
+            raise InstallError('Directory is already part of this transaction: '+relative)
+        destination = self.backup/'directories'/relative
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copytree(target, destination, symlinks=True)
+        self.state['files'].append(dict(path=relative, before='directory', after='directory', generated_dir=True))
+        self.save()
+        shutil.rmtree(target)
+
     def generated_dir(self, relative):
         entry = self.capture(relative, generated_dir=True)
         entry['after'] = 'directory'
@@ -106,9 +120,11 @@ def restore(backup, home=None, force=False):
     checked = []
     for entry in state['files']:
         target = validate(home, entry['path'])
-        if entry['before'] not in ['file','link','absent']: raise InstallError('Invalid backup entry')
+        if entry['before'] not in ['file','link','absent','directory']: raise InstallError('Invalid backup entry')
         if entry['before'] == 'file' and not (backup/'files'/entry['path']).is_file():
             raise InstallError('Incomplete backup: '+entry['path'])
+        if entry['before'] == 'directory' and not (backup/'directories'/entry['path']).is_dir():
+            raise InstallError('Incomplete runtime backup: '+entry['path'])
         if not force and entry['after'] != 'pending' and fingerprint(target) != entry['after']:
             raise InstallError('Edited after installation: '+entry['path']+' (save edits, then use --force)')
         checked.append((entry,target))
@@ -121,6 +137,7 @@ def restore(backup, home=None, force=False):
         target.parent.mkdir(parents=True, exist_ok=True)
         if entry['before'] == 'file': shutil.copy2(backup/'files'/entry['path'],target)
         elif entry['before'] == 'link': target.symlink_to(entry['link'])
+        elif entry['before'] == 'directory': shutil.copytree(backup/'directories'/entry['path'],target,symlinks=True)
     state['status'] = 'restored'
     atomic_json(backup/'manifest.json',state)
     return home

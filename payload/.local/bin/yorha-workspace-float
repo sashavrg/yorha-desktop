@@ -1,0 +1,67 @@
+#!/usr/bin/env python3
+"""Reversible replacement for the removed workspaceopt allfloat dispatcher."""
+import argparse
+import fcntl
+import hashlib
+import json
+import os
+from pathlib import Path
+import subprocess
+import tempfile
+
+def query(name):
+    return json.loads(subprocess.check_output(['hyprctl',name,'-j'],text=True))
+
+def dispatch(name,args):
+    result=subprocess.run(['hyprctl','dispatch',name,args],capture_output=True,text=True,check=True)
+    if result.stdout.strip()!='ok': raise RuntimeError(result.stdout.strip() or result.stderr.strip())
+
+def area(monitor):
+    w,h=monitor['width'],monitor['height']
+    if monitor.get('transform',0)%2: w,h=h,w
+    scale=monitor.get('scale',1) or 1
+    left,top,right,bottom=monitor.get('reserved',[0,0,0,0])
+    return monitor['x']+left,monitor['y']+top,w/scale-left-right,h/scale-top-bottom
+
+def main():
+    p=argparse.ArgumentParser(description=__doc__)
+    p.add_argument('--workspace',type=int,help='Target workspace (default: active)')
+    args=p.parse_args()
+    workspace=args.workspace if args.workspace is not None else query('activeworkspace')['id']
+    runtime=Path(os.environ.get('XDG_RUNTIME_DIR',f'/run/user/{os.getuid()}'))
+    instance=hashlib.sha256(os.environ.get('HYPRLAND_INSTANCE_SIGNATURE','').encode()).hexdigest()[:12]
+    statefile=runtime/f'yorha-allfloat-{instance}-{workspace}.json'
+    with (runtime/'yorha-allfloat.lock').open('w') as lock:
+        try: fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+        except BlockingIOError: return
+        clients={w['address']:w for w in query('clients') if w.get('mapped',True) and w['workspace']['id']==workspace}
+        if statefile.exists():
+            state=json.loads(statefile.read_text())
+            for address in state['addresses']:
+                window=clients.get(address)
+                if window and window.get('floating') and not window.get('fullscreen'):
+                    dispatch('settiled','address:'+address)
+            statefile.unlink()
+            return
+        windows=[w for w in clients.values() if not w.get('floating') and not w.get('fullscreen')]
+        if not windows: return
+        fd,tmp=tempfile.mkstemp(dir=runtime,prefix='.yorha-allfloat-')
+        try:
+            with os.fdopen(fd,'w') as stream: json.dump({'addresses':[w['address'] for w in windows]},stream)
+            os.replace(tmp,statefile)
+        finally:
+            if os.path.exists(tmp): os.unlink(tmp)
+        monitors={m['id']:m for m in query('monitors')}
+        for window in windows:
+            monitor=monitors.get(window['monitor'])
+            if monitor is None: continue
+            x,y,aw,ah=area(monitor)
+            w,h=window['size'];w=max(1,min(w,int(aw-24)));h=max(1,min(h,int(ah-24)))
+            wx=max(x+12,min(window['at'][0],x+aw-w-12))
+            wy=max(y+12,min(window['at'][1],y+ah-h-12))
+            address='address:'+window['address']
+            dispatch('setfloating',address)
+            dispatch('resizewindowpixel',f'exact {w} {h},{address}')
+            dispatch('movewindowpixel',f'exact {round(wx)} {round(wy)},{address}')
+
+if __name__=='__main__': main()

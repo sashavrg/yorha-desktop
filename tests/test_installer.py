@@ -65,6 +65,20 @@ class TransactionTests(unittest.TestCase):
         restore(tx.backup)
         self.assertFalse((self.home/'file').exists())
 
+    def test_runtime_directory_rebuild_and_rollback(self):
+        runtime=self.home/'runtime';runtime.mkdir()
+        (runtime/'old-library').write_text('Python before the upgrade')
+        (runtime/'interpreter').symlink_to('/usr/bin/python3')
+        tx=Transaction(self.home)
+        tx.replace_directory('runtime')
+        tx.generated_dir('runtime')
+        runtime.mkdir();(runtime/'new-library').write_text('Python after the upgrade')
+        tx.finish()
+        restore(tx.backup)
+        self.assertEqual((runtime/'old-library').read_text(),'Python before the upgrade')
+        self.assertTrue((runtime/'interpreter').is_symlink())
+        self.assertFalse((runtime/'new-library').exists())
+
     def test_traversal_is_refused(self):
         tx=Transaction(self.home)
         with self.assertRaises(InstallError):tx.put('../escape',b'no')
