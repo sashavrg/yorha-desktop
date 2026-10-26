@@ -24,6 +24,8 @@ Without this option the dependency script preflights enabled repositories and re
 
 Python GI, Cairo, NumPy, psutil and fontTools come from native packages. Calendar libraries and their pure Python dependencies are pinned in `calendar-requirements.txt` and installed from PyPI in `~/.local/share/yorha/calendar-venv` with system GI bindings visible. User-site Python packages are disabled for the service runtime. Native package versions follow the distribution; this is reproducible configuration, not a bit-for-bit OS image.
 
+Native dialogs and the Super+R console automatically use a separately installed `hyprland-guiutils`; otherwise they use Rofi. Hyprtoolkit palettes and wrappers are included in every install. See [native UI integration](NATIVE-UI.md) for command discovery, theme customization and safe confirmation previews.
+
 ## Wizard choices
 
 | Option | Meaning |

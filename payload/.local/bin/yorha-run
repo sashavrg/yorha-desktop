@@ -1,0 +1,33 @@
+#!/usr/bin/env python3
+"""Open the native command console, or the themed Rofi run prompt."""
+import json
+import os
+from pathlib import Path
+import shutil
+import subprocess
+
+
+def main():
+    # Commands installed by the theme and other user applications should also
+    # be runnable from a compositor session with a minimal inherited PATH.
+    paths = [str(Path.home()/'.local/bin'), *os.environ.get('PATH', os.defpath).split(os.pathsep)]
+    os.environ['PATH'] = os.pathsep.join(dict.fromkeys(paths))
+    local = Path.home()/'.local/bin/hyprland-run'
+    native = str(local) if local.is_file() and os.access(local, os.X_OK) else shutil.which('hyprland-run')
+    if native:
+        # Reuse an existing console instead of opening one for every keypress.
+        try:
+            clients = json.loads(subprocess.check_output(['hyprctl', 'clients', '-j'], text=True))
+            window = next((c for c in clients if c.get('class') == 'hyprland-run' and c.get('mapped')), None)
+            if window:
+                subprocess.run(['hyprctl', 'dispatch', 'focuswindow', 'address:'+window['address']], check=True)
+                return
+        except (OSError, ValueError, subprocess.CalledProcessError):
+            pass
+        os.execl(native, native)
+    os.execlp('rofi', 'rofi', '-show', 'run', '-p', 'COMMAND', '-theme-str',
+              'textbox-header { str: "■  YoRHa : COMMAND CONSOLE"; }')
+
+
+if __name__ == '__main__':
+    main()

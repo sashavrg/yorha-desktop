@@ -48,6 +48,7 @@ For an unattended configuration install with prerequisites already present:
 - **Standby:** one unlit perspective-projected crest, a 60-second rotation, slow vertical bob, fine grain and quiet transmission messages. Mouse/keyboard dismisses it; Hyprlock provides authentication separately.
 - Procedural landscape/portrait wallpapers with a woven grid, edge fringing and gentle lens distortion. Generated locally from source.
 - Optional SDDM theme and optional DroidCam USB/Wi-Fi button.
+- **Native system dialogs and command console:** matching Hyprtoolkit palettes, square corners, explicit power confirmations and Super + R command entry. Uses separately installed `hyprland-guiutils` when available, with a themed Rofi fallback.
 
 The **YoRHa game emblem is used throughout**, alongside packaged Noto Sans / JetBrains Mono and system Breeze icons. Every normal install downloads a community SVG trace from a pinned upstream revision and verifies its checksum before generating the wallpapers and other visuals. This also applies to unattended `--yes` installs; there is no separate logo choice or alternative crest. Internet access is required for the emblem download. The game SVG is not bundled or relicensed. See [asset credits](THIRD_PARTY.md).
 
@@ -57,6 +58,7 @@ The **YoRHa game emblem is used throughout**, alongside packaged Noto Sans / Jet
 | --- | --- |
 | Super + Enter | Kitty terminal |
 | Super + D | Application/search launcher |
+| Super + R | Command console (native Hyprland Run when available) |
 | Super + A | Window overview |
 | Super + B | Default browser at a valid blank page |
 | Super + E | Home folder in your default file manager |
@@ -112,6 +114,7 @@ Recovery checks for subsequent edits before changing files. Save any edits you w
 - [Calendar, quests and monitor behavior](docs/WIDGETS.md)
 - [SDDM login theme](docs/SDDM.md)
 - [USB/Wi-Fi DroidCam addon](docs/PHONECAM.md)
+- [Native dialogs, command console and safe previews](docs/NATIVE-UI.md)
 - [Architecture and development](docs/DEVELOPMENT.md)
 - [Fedora 44 / Hyprland 0.56 upgrade checks](docs/UPGRADING.md)
 

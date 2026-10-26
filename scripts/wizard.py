@@ -143,6 +143,7 @@ def session_config(args):
         bindings=[('SUPER','RETURN','kitty'),('SUPER','D','rofi -show drun'),
             ('SUPER','E','xdg-open "$HOME"'),('SUPER','B','"$HOME/.local/bin/yorha-browser"'),
             ('SUPER','A','rofi -show window'),
+            ('SUPER','R','"$HOME/.local/bin/yorha-run"'),
             ('SUPER','L','"$HOME/.local/bin/yorha-lock"'),('SUPER','SPACE','"$HOME/.local/bin/yorha-toggle-float"'),
             ('SUPER ALT','SPACE','"$HOME/.local/bin/yorha-workspace-float"'),
             ('SUPER','N','swaync-client -t'),('SUPER','ESCAPE','"$HOME/.local/bin/yorha-power"'),

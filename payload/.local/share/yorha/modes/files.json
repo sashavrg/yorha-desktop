@@ -1,5 +1,6 @@
 [
   ".config/hypr/yorha.conf",
+  ".config/hypr/hyprtoolkit.conf",
   ".config/waybar/config",
   ".config/waybar/style.css",
   ".config/rofi/config.rasi",

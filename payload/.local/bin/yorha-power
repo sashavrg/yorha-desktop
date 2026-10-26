@@ -1,16 +1,39 @@
 #!/usr/bin/env bash
 set -euo pipefail
-choice=$(printf '%s\n' '01 : Lock' '02 : Suspend' '03 : Log out' '04 : Reboot' '05 : Shut down' '06 : Day / Night mode' | rofi -dmenu -i -p 'System' -theme-str 'textbox-header { str: "■  YoRHa : SYSTEM CONTROL"; } listview { lines: 6; } mainbox { children: [textbox-header, inputbar, listview, textbox-footer]; }') || exit 0
+preview=false
+if [[ ${1:-} == --preview ]]; then
+    preview=true
+    case ${2:-shutdown} in
+        logout) choice='03 : Log out' ;;
+        reboot) choice='04 : Reboot' ;;
+        shutdown) choice='05 : Shut down' ;;
+        *) printf 'Usage: yorha-power [--preview logout|reboot|shutdown]\n' >&2; exit 2 ;;
+    esac
+elif (( $# )); then
+    printf 'Usage: yorha-power [--preview logout|reboot|shutdown]\n' >&2
+    exit 2
+else
+    choice=$(printf '%s\n' '01 : Lock' '02 : Suspend' '03 : Log out' '04 : Reboot' '05 : Shut down' '06 : Day / Night mode' | rofi -dmenu -i -p 'System' -theme-str 'textbox-header { str: "■  YoRHa : SYSTEM CONTROL"; } listview { lines: 6; } mainbox { children: [textbox-header, inputbar, listview, textbox-footer]; }') || exit 0
+fi
 case "$choice" in
     '06 : Day / Night mode') "$HOME/.local/bin/yorha-mode" toggle ;;
     '01 : Lock') "$HOME/.local/bin/yorha-lock" ;;
     '02 : Suspend') "$HOME/.local/bin/yorha-lock" & sleep 1; systemctl suspend ;;
     '03 : Log out'|'04 : Reboot'|'05 : Shut down')
-        confirm=$(printf '%s\n' 'Cancel' 'Confirm' | rofi -dmenu -i -p "$choice" -theme-str 'textbox-header { str: "■  CONFIRM SYSTEM ACTION"; } listview { lines: 2; } mainbox { children: [textbox-header, inputbar, listview, textbox-footer]; }') || exit 0
-        [[ "$confirm" == Confirm ]] || exit 0
         case "$choice" in
-            '03 : Log out') hyprctl dispatch exit ;;
-            '04 : Reboot') systemctl reboot ;;
-            '05 : Shut down') systemctl poweroff ;;
-        esac ;;
+            '03 : Log out') message='End this operator session?'; action=(hyprctl dispatch exit) ;;
+            '04 : Reboot') message='Restart this terminal?'; action=(systemctl reboot) ;;
+            '05 : Shut down') message='Power down this terminal?'; action=(systemctl poweroff) ;;
+        esac
+        message+=$'\nSave your work before proceeding. Active applications will close.'
+        if $preview; then message=$'PREVIEW ONLY / No system action will be performed.\n\n'"$message"; fi
+        "$HOME/.local/bin/yorha-dialog" confirm --title 'SYSTEM / POWER CONTROL' --text "$message" || exit 0
+        # The preview guard stays immediately before dispatching any system action.
+        $preview && exit 0
+        if ! output=$("${action[@]}" 2>&1); then
+            "$HOME/.local/bin/yorha-dialog" message --title 'SYSTEM / REQUEST FAILED' \
+                --text "The system could not complete this request."$'\n\n'"$output" || true
+            exit 1
+        fi
+        ;;
 esac

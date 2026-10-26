@@ -62,3 +62,7 @@ systemctl --user status yorha-desktop yorha-cockpit-widget yorha-soundwave
 ```
 
 Run GUI commands in the intended session, with its normal `XDG_RUNTIME_DIR`, `WAYLAND_DISPLAY` and D-Bus environment. Reapply whichever palette you prefer after testing.
+
+## Native UI addition, 2026-10-26
+
+The palette manifest now includes `hypr/hyprtoolkit.conf`. Native dialogs and the Super+R command console use the shared day/night settings when `hyprland-guiutils` is installed; wrappers use Rofi when it is absent. The system menu requires an explicit `EXECUTE` response for logout/reboot/shutdown, and `yorha-power --preview` provides a way to inspect confirmations without performing an action. See [native UI details](NATIVE-UI.md).
