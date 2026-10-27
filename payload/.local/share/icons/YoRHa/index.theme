@@ -1,5 +1,19 @@
 [Icon Theme]
 Name=YoRHa
-Comment=YoRHa palette with system Breeze fallback
-Inherits=breeze,breeze,hicolor
-Directories=
+Comment=Original geometric archive icons with system Breeze fallback
+Inherits=breeze,hicolor
+Directories=yorha/places,yorha/mimetypes
+
+[yorha/places]
+Size=32
+MinSize=8
+MaxSize=512
+Type=Scalable
+Context=Places
+
+[yorha/mimetypes]
+Size=32
+MinSize=8
+MaxSize=512
+Type=Scalable
+Context=MimeTypes

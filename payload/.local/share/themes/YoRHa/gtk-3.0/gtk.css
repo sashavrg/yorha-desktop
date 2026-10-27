@@ -92,3 +92,120 @@ menu menuitem:disabled label, menu menuitem:disabled label:backdrop,
 menu menuitem:disabled cellview, menu menuitem:disabled accelerator,
 .menu menuitem:disabled label, .context-menu menuitem:disabled label,
 modelbutton.flat:disabled label, modelbutton.flat:disabled label:backdrop { color: inherit; opacity: 1; }
+
+/* YoRHa / file archive — scoped to Thunar. */
+window.thunar menubar {
+  background: @theme_bg_color;
+  padding: 3px 10px;
+  border-bottom: 1px solid @borders;
+}
+window.thunar menubar > menuitem { padding: 5px 10px; font-size: 11px; }
+window.thunar toolbar {
+  background: @theme_bg_color;
+  padding: 10px 12px;
+  border-bottom: 1px solid @borders;
+}
+window.thunar toolbar button {
+  background-image: none;
+  background-color: transparent;
+  border: 1px solid transparent;
+  box-shadow: none;
+  min-width: 24px;
+  min-height: 24px;
+  padding: 4px 6px;
+  color: @theme_fg_color;
+}
+window.thunar toolbar button:hover,
+window.thunar toolbar button:checked,
+window.thunar toolbar button:active {
+  background: @theme_selected_bg_color;
+  color: @theme_selected_fg_color;
+  border-color: @theme_selected_bg_color;
+}
+window.thunar toolbar button label,
+window.thunar toolbar button image { color: inherit; }
+window.thunar .path-bar button {
+  background: @theme_base_color;
+  color: @theme_fg_color;
+  border: 1px solid @borders;
+  margin-right: 5px;
+  padding: 5px 12px;
+  font-size: 12px;
+}
+window.thunar .path-bar button:checked,
+window.thunar .path-bar button:active,
+window.thunar .path-bar button:hover {
+  background: @theme_selected_bg_color;
+  color: @theme_selected_fg_color;
+  border-color: @theme_selected_bg_color;
+}
+window.thunar .path-bar button label,
+window.thunar .path-bar button:checked label,
+window.thunar .path-bar button:active label,
+window.thunar .path-bar button image { color: inherit; }
+window.thunar .sidebar {
+  background: @theme_bg_color;
+  border: 1px solid @borders;
+  margin: 14px 0 14px 14px;
+}
+window.thunar .sidebar .view {
+  background: @theme_bg_color;
+  color: @theme_fg_color;
+  font-size: 12px;
+  -GtkTreeView-vertical-separator: 13;
+  -GtkTreeView-horizontal-separator: 10;
+}
+window.thunar .sidebar .view:selected,
+window.thunar .sidebar .view:selected:backdrop {
+  background: @theme_selected_bg_color;
+  color: @theme_selected_fg_color;
+}
+window.thunar .standard-view {
+  margin: 14px;
+  border: 1px solid @borders;
+}
+window.thunar .standard-view .view {
+  background-color: @theme_base_color;
+  background-image: url("assets/archive-grid.svg");
+  background-repeat: repeat;
+  color: @theme_text_color;
+  font-size: 13px;
+  -GtkTreeView-vertical-separator: 12;
+  -GtkTreeView-horizontal-separator: 12;
+}
+window.thunar .standard-view .view:selected,
+window.thunar .standard-view .view:selected:backdrop {
+  background-image: none;
+  background-color: @theme_selected_bg_color;
+  color: @theme_selected_fg_color;
+}
+window.thunar .standard-view treeview > header > button,
+window.thunar .standard-view treeview > header > button:backdrop {
+  background: @theme_selected_bg_color;
+  color: @theme_selected_fg_color;
+  border: 0;
+  border-right: 1px solid alpha(@theme_selected_fg_color, 0.25);
+  min-height: 26px;
+  padding: 3px 12px;
+  font-family: "JetBrains Mono";
+  font-size: 11px;
+  font-weight: normal;
+}
+window.thunar .standard-view treeview > header > button label,
+window.thunar .standard-view treeview > header > button label:backdrop,
+window.thunar .standard-view treeview > header > button image { color: @theme_selected_fg_color; }
+window.thunar statusbar {
+  background: @theme_selected_bg_color;
+  color: @theme_selected_fg_color;
+  margin: 0 14px 14px;
+  padding: 5px 10px;
+  border: 1px solid @theme_selected_bg_color;
+}
+window.thunar statusbar label,
+window.thunar statusbar label:backdrop {
+  color: @theme_selected_fg_color;
+  font-family: "JetBrains Mono";
+  font-size: 11px;
+}
+
+window.thunar toolbar button:disabled { background: transparent; border-color: transparent; color: @insensitive_fg_color; opacity: 0.55; }

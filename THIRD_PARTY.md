@@ -4,7 +4,7 @@ This unofficial fan theme is inspired by NieR:Automata's menu, quest log and HUD
 
 ## Original project assets
 
-The procedural mesh/traces/rings wallpaper generator, desktop panel layout, native Sound Waves geometry and installer are project source distributed under GPL-3.0-or-later. Generated wallpapers are made locally; game screenshots, the author's concept reference image and character illustrations are not redistributed.
+The procedural mesh/traces/rings wallpaper generator, desktop panel layout, native Sound Waves geometry, geometric archive icons, Thunar-specific styling and installer are project source distributed under GPL-3.0-or-later. Generated wallpapers are made locally; game screenshots, the author's concept reference image and character illustrations are not redistributed.
 
 Visual references: [Interface In Game menu archive](https://interfaceingame.com/games/nierautomata/) and the game's HUD: Sound Waves chip. Reference captures are not included in this repository. README previews are newly rendered with synthetic metadata/local demo tasks; they are not screenshots of the author's accounts or desktop session.
 
@@ -24,4 +24,4 @@ The two `payload/.config/Kvantum/YoRHa*` themes are recolored derivatives of Cat
 
 ## System assets and dependencies
 
-Breeze icons are installed from distribution packages and used through inheritance; GTK themes import the system Adwaita base. The author's recolored icon collection is not redistributed. Noto Sans and JetBrains Mono text fonts are also distribution packages. Native applications and Python dependencies retain their upstream licenses. Installing optional DroidCam does not make it part of this repository or the project's license.
+Breeze icons are installed from distribution packages and used through inheritance for icons not supplied by the original archive set; GTK themes import the system Adwaita base. The author's recolored icon collection is not redistributed. Noto Sans and JetBrains Mono text fonts are also distribution packages. Native applications and Python dependencies retain their upstream licenses. Installing optional DroidCam does not make it part of this repository or the project's license.

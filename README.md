@@ -49,6 +49,7 @@ For an unattended configuration install with prerequisites already present:
 - Procedural landscape/portrait wallpapers with a woven grid, edge fringing and gentle lens distortion. Generated locally from source.
 - Optional SDDM theme and optional DroidCam USB/Wi-Fi button.
 - **Native system dialogs and command console:** matching Hyprtoolkit palettes, square corners, explicit power confirmations and Super + R command entry. Uses separately installed `hyprland-guiutils` when available, with a themed Rofi fallback.
+- **Thunar archive styling:** boxed navigation, ledger-style file columns, tab-like breadcrumbs, subtle grid surfaces and original geometric file/folder icons. An optional reversible layout preset sets up the details view. See [the explorer guide](docs/EXPLORER.md).
 
 The **YoRHa game emblem is used throughout**, alongside packaged Noto Sans / JetBrains Mono and system Breeze icons. Every normal install downloads a community SVG trace from a pinned upstream revision and verifies its checksum before generating the wallpapers and other visuals. This also applies to unattended `--yes` installs; there is no separate logo choice or alternative crest. Internet access is required for the emblem download. The game SVG is not bundled or relicensed. See [asset credits](THIRD_PARTY.md).
 
@@ -115,6 +116,7 @@ Recovery checks for subsequent edits before changing files. Save any edits you w
 - [SDDM login theme](docs/SDDM.md)
 - [USB/Wi-Fi DroidCam addon](docs/PHONECAM.md)
 - [Native dialogs, command console and safe previews](docs/NATIVE-UI.md)
+- [Thunar archive explorer and layout recovery](docs/EXPLORER.md)
 - [Architecture and development](docs/DEVELOPMENT.md)
 - [Fedora 44 / Hyprland 0.56 upgrade checks](docs/UPGRADING.md)
 

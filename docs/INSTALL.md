@@ -26,6 +26,8 @@ Python GI, Cairo, NumPy, psutil and fontTools come from native packages. Calenda
 
 Native dialogs and the Super+R console automatically use a separately installed `hyprland-guiutils`; otherwise they use Rofi. Hyprtoolkit palettes and wrappers are included in every install. See [native UI integration](NATIVE-UI.md) for command discovery, theme customization and safe confirmation previews.
 
+The `apps` component also includes Thunar-specific GTK styling and original archive icons. Thunar is optional; its visual layout is configured separately with `yorha-thunar-layout apply`, which records the previous preferences for `yorha-thunar-layout restore`. See [the explorer guide](EXPLORER.md). The installer does not change your default file manager.
+
 ## Wizard choices
 
 | Option | Meaning |

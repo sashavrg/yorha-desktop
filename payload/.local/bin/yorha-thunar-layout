@@ -1,0 +1,126 @@
+#!/usr/bin/env python3
+"""Apply or restore the optional Thunar archive layout, retaining previous values."""
+import argparse
+import fcntl
+import json
+import os
+from pathlib import Path
+import shutil
+import subprocess
+import tempfile
+
+PRESET = {
+    '/last-view': ('string', 'ThunarDetailsView'),
+    '/last-location-bar': ('string', 'ThunarLocationButtons'),
+    '/last-side-pane': ('string', 'THUNAR_SIDEPANE_TYPE_SHORTCUTS'),
+    '/last-separator-position': ('int', '232'),
+    '/last-details-view-zoom-level': ('string', 'THUNAR_ZOOM_LEVEL_38_PERCENT'),
+    '/last-details-view-fixed-columns': ('bool', 'false'),
+    '/last-details-view-column-order': ('string', 'THUNAR_COLUMN_NAME,THUNAR_COLUMN_TYPE,THUNAR_COLUMN_SIZE,THUNAR_COLUMN_DATE_MODIFIED'),
+    '/last-details-view-visible-columns': ('string', 'THUNAR_COLUMN_NAME,THUNAR_COLUMN_TYPE,THUNAR_COLUMN_SIZE,THUNAR_COLUMN_DATE_MODIFIED'),
+    '/last-statusbar-visible': ('bool', 'true'),
+    '/misc-small-toolbar-icons': ('bool', 'true'),
+    '/misc-symbolic-icons-in-sidepane': ('bool', 'false'),
+    '/misc-symbolic-icons-in-toolbar': ('bool', 'false'),
+    '/misc-date-style': ('string', 'THUNAR_DATE_STYLE_CUSTOM'),
+    '/misc-date-custom-style': ('string', '%d.%m.%Y  %H:%M'),
+}
+
+
+def read_property(name):
+    result = subprocess.run(['xfconf-query', '-c', 'thunar', '-p', name], capture_output=True, text=True)
+    return result.stdout.rstrip('\n') if result.returncode == 0 else None
+
+
+def write_property(name, kind, value):
+    if value is None:
+        if read_property(name) is None:
+            return
+        command = ['xfconf-query', '-c', 'thunar', '-p', name, '-r']
+    else:
+        command = ['xfconf-query', '-c', 'thunar', '-p', name, '-n', '-t', kind, '-s', value]
+    result = subprocess.run(command, capture_output=True, text=True)
+    if result.returncode:
+        raise RuntimeError(result.stderr.strip() or f'Could not update {name}')
+
+
+def save(path, record):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fd, temporary = tempfile.mkstemp(dir=path.parent, prefix='.thunar-layout-')
+    try:
+        with os.fdopen(fd, 'w') as stream:
+            json.dump(record, stream, indent=2)
+            stream.write('\n')
+        os.replace(temporary, path)
+    finally:
+        if os.path.exists(temporary):
+            os.unlink(temporary)
+
+
+def configure(path):
+    if path.exists():
+        record = json.loads(path.read_text())
+    else:
+        record = {}
+    if record.get('status') not in ['applied', 'applying']:
+        record = {'version': 1, 'before': {name: read_property(name) for name in PRESET}}
+    elif record.get('version') != 1 or not record.get('before') or not set(record['before']) <= set(PRESET):
+        raise RuntimeError('Unsupported Thunar layout backup')
+    # Preserve older backups when a later layout version adds a visual setting.
+    for name in PRESET:
+        if name not in record['before']:
+            record['before'][name] = read_property(name)
+    record['status'] = 'applying'
+    save(path, record)
+    try:
+        for name, (kind, value) in PRESET.items():
+            write_property(name, kind, value)
+    except BaseException:
+        restore(path)
+        raise
+    record['status'] = 'applied'
+    save(path, record)
+
+
+def restore(path):
+    record = json.loads(path.read_text())
+    if record.get('version') != 1 or not record.get('before') or not set(record['before']) <= set(PRESET):
+        raise RuntimeError('Unsupported Thunar layout backup')
+    for name, value in reversed(list(record['before'].items())):
+        write_property(name, PRESET[name][0], value)
+    record['status'] = 'restored'
+    save(path, record)
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('action', choices=['apply', 'restore', 'status'])
+    args = parser.parse_args()
+    path = Path.home()/'.local/state/yorha/thunar-layout.json'
+    if args.action == 'status':
+        print(json.loads(path.read_text()).get('status', 'unknown') if path.exists() else 'not configured')
+        return
+    if not shutil.which('xfconf-query') or not shutil.which('thunar'):
+        parser.exit(1, 'Thunar and xfconf-query are required for this optional layout.\n')
+    # Check access to the settings service before recording any defaults.
+    probe = subprocess.run(['xfconf-query', '-l'], capture_output=True, text=True)
+    if probe.returncode:
+        parser.exit(1, 'Cannot contact Xfconf: '+probe.stderr.strip()+'\n')
+    try:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with path.with_suffix('.lock').open('w') as lock:
+            fcntl.flock(lock, fcntl.LOCK_EX)
+            if args.action == 'apply':
+                configure(path)
+            elif path.exists():
+                restore(path)
+            else:
+                parser.exit(1, 'No Thunar layout backup exists.\n')
+    except (OSError, ValueError, RuntimeError) as exc:
+        parser.exit(1, str(exc)+'\n')
+    print('YoRHa archive layout '+('applied' if args.action == 'apply' else 'restored')+'. Reopen Thunar to use it.')
+    print('Preference backup: '+str(path))
+
+
+if __name__ == '__main__':
+    main()
